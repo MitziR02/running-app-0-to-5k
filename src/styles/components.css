@@ -248,6 +248,18 @@
   border-color: rgba(20, 232, 112, 0.38);
 }
 
+.week-card-locked {
+  border-color: rgba(28, 53, 85, 0.7);
+}
+
+.week-card-toggle {
+  list-style: none;
+}
+
+.week-card-toggle::-webkit-details-marker {
+  display: none;
+}
+
 .week-card-toggle {
   width: 100%;
   gap: 12px;
@@ -272,6 +284,11 @@
   font-weight: 800;
 }
 
+.week-card-locked .week-number {
+  background: var(--color-border);
+  color: var(--color-muted);
+}
+
 .week-card-title {
   display: grid;
   flex: 1;
@@ -293,6 +310,16 @@
   font-size: 22px;
 }
 
+.week-card-indicator::before {
+  display: block;
+  content: "+";
+  transition: transform 180ms ease;
+}
+
+.week-card[open] .week-card-indicator::before {
+  transform: rotate(45deg);
+}
+
 .week-sessions {
   border-top: 1px solid var(--color-border);
 }
@@ -302,6 +329,10 @@
   align-items: flex-start;
   padding: 16px 18px;
   border-bottom: 1px solid rgba(28, 53, 85, 0.65);
+}
+
+.workout-row-current {
+  background: rgba(20, 232, 112, 0.04);
 }
 
 .workout-row:last-child {
