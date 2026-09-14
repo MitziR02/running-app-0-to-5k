@@ -1,0 +1,93 @@
+/* ============================================================================
+ * Copyright (c) 2026 Mitzi Rios. Todos los derechos reservados.
+ * USO STRICTAMENTE NO COMERCIAL / NON-COMMERCIAL USE ONLY.
+ * ============================================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--color-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(20, 232, 112, 0.08), transparent 32rem),
+    var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+}
+
+a {
+  text-decoration: none;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-run);
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3,
+p,
+dl,
+dd,
+dt {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+.brand,
+.button,
+.navigation-item,
+.eyebrow,
+.status-label,
+.workout-day,
+.timer-phase {
+  font-family: var(--font-display);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+#app {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 0 20px 104px;
+}
+
+noscript {
+  display: block;
+  padding: 16px;
+  color: var(--color-warmup);
+  text-align: center;
+}
+
+@media (min-width: 760px) {
+  #app {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+}
