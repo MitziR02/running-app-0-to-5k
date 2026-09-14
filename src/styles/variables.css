@@ -1,0 +1,29 @@
+/* ============================================================================
+ * Copyright (c) 2026 Mitzi Rios. Todos los derechos reservados.
+ * USO STRICTAMENTE NO COMERCIAL / NON-COMMERCIAL USE ONLY.
+ * ============================================================================ */
+
+:root {
+  --color-bg: #060a0f;
+  --color-surface: #0b1520;
+  --color-card: #0f1e30;
+  --color-card-raised: #132540;
+  --color-border: #1c3555;
+  --color-text: #deeeff;
+  --color-muted: #6a849d;
+  --color-subtle: #9bb4c8;
+
+  --color-run: #14e870;
+  --color-run-soft: rgba(20, 232, 112, 0.14);
+  --color-walk: #4facfe;
+  --color-walk-soft: rgba(79, 172, 254, 0.14);
+  --color-warmup: #f59e0b;
+  --color-cooldown: #a78bfa;
+
+  --font-display: "Outfit", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --shadow-glow: 0 0 28px rgba(20, 232, 112, 0.22);
+}

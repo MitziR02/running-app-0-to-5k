@@ -1,0 +1,274 @@
+<!doctype html>
+<!--
+  ============================================================================
+  Copyright (c) 2026 Mitzi Rios. Todos los derechos reservados.
+  USO STRICTAMENTE NO COMERCIAL / NON-COMMERCIAL USE ONLY.
+  Queda prohibida la comercialización, venta o monetización de este software.
+  ============================================================================
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Plan progresivo de entrenamiento para pasar de 0 a 5 km."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="src/styles/variables.css" />
+    <link rel="stylesheet" href="src/styles/base.css" />
+    <link rel="stylesheet" href="src/styles/components.css" />
+    <link rel="stylesheet" href="src/styles/screens.css" />
+    <title>Running App | 0 to 5K</title>
+  </head>
+  <body>
+    <header id="app-header" class="app-header">
+      <a class="brand" href="#home" aria-label="Running App, ir al inicio">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        <span class="brand-name">Running App</span>
+      </a>
+    </header>
+
+    <main id="app" aria-live="polite">
+      <noscript>
+        Esta aplicacion necesita JavaScript para mostrar el plan de entrenamiento.
+      </noscript>
+
+      <!-- Pantalla de inicio -->
+      <section id="home" class="screen screen-home" aria-labelledby="home-title">
+        <header class="screen-header">
+          <p class="eyebrow">Tu recorrido</p>
+          <h1 id="home-title">Construye tu ritmo.</h1>
+          <p class="screen-intro">
+            Entrena de forma progresiva desde tus primeros intervalos hasta completar 5 km.
+          </p>
+        </header>
+
+        <section class="workout-card" aria-labelledby="next-workout-title">
+          <div class="card-header">
+            <p class="status-label">Siguiente sesion</p>
+            <p class="workout-meta">Semana 1 · Dia 1</p>
+          </div>
+          <h2 id="next-workout-title">Primeros pasos</h2>
+          <p>8 intervalos cortos de carrera con recuperaciones caminando.</p>
+          <dl class="workout-summary">
+            <div>
+              <dt>Duracion</dt>
+              <dd>28 min</dd>
+            </div>
+            <div>
+              <dt>Intervalos</dt>
+              <dd>18</dd>
+            </div>
+            <div>
+              <dt>Tiempo de carrera</dt>
+              <dd>08:00</dd>
+            </div>
+          </dl>
+          <button class="button button-primary" type="button">Iniciar sesion</button>
+        </section>
+
+        <section class="week-progress" aria-labelledby="week-progress-title">
+          <div class="section-heading">
+            <h2 id="week-progress-title">Progreso de la semana</h2>
+            <span>0/3 sesiones</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-label="Progreso semanal" aria-valuenow="0" aria-valuemin="0" aria-valuemax="3">
+            <span class="progress-bar-fill"></span>
+          </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Estadisticas generales">
+          <article class="stat-card">
+            <p>Sesiones</p>
+            <strong>0 <span>/ 24</span></strong>
+          </article>
+          <article class="stat-card">
+            <p>Tiempo total</p>
+            <strong>--</strong>
+          </article>
+          <article class="stat-card">
+            <p>RPE medio</p>
+            <strong>-- <span>/ 10</span></strong>
+          </article>
+        </section>
+      </section>
+
+      <!-- Pantalla del plan completo -->
+      <section id="plan" class="screen screen-plan" aria-labelledby="plan-title" hidden>
+        <header class="screen-header">
+          <p class="eyebrow">Programa de 8 semanas</p>
+          <h1 id="plan-title">Plan de entrenamiento</h1>
+        </header>
+
+        <section class="program-progress" aria-label="Progreso hacia 5 km">
+          <div class="section-heading">
+            <h2>Camino a 5 km</h2>
+            <span>0/24</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-label="Progreso hacia 5 km" aria-valuenow="0" aria-valuemin="0" aria-valuemax="24">
+            <span class="progress-bar-fill"></span>
+          </div>
+        </section>
+
+        <div class="week-list">
+          <article class="week-card week-card-current">
+            <button class="week-card-toggle" type="button" aria-expanded="true" aria-controls="week-1-sessions">
+              <span class="week-number">1</span>
+              <span class="week-card-title">
+                <strong>Semana 1</strong>
+                <small>0/3 completadas</small>
+              </span>
+              <span class="week-card-indicator" aria-hidden="true">+</span>
+            </button>
+            <div id="week-1-sessions" class="week-sessions">
+              <article class="workout-row">
+                <div class="workout-row-content">
+                  <p class="workout-day">Dia 1 · Siguiente</p>
+                  <h3>Primeros pasos</h3>
+                  <p>28 min · Carrera mas larga: 01:00</p>
+                  <div class="interval-timeline" aria-label="Calentamiento, carrera y caminata">
+                    <span class="interval interval-warmup"></span>
+                    <span class="interval interval-run"></span>
+                    <span class="interval interval-walk"></span>
+                    <span class="interval interval-run"></span>
+                    <span class="interval interval-walk"></span>
+                    <span class="interval interval-run"></span>
+                  </div>
+                </div>
+                <button class="button button-secondary" type="button">Comenzar</button>
+              </article>
+              <article class="workout-row">
+                <div class="workout-row-content">
+                  <p class="workout-day">Dia 2</p>
+                  <h3>Encontrar el ritmo</h3>
+                  <p>28 min · Carrera mas larga: 01:00</p>
+                </div>
+              </article>
+              <article class="workout-row">
+                <div class="workout-row-content">
+                  <p class="workout-day">Dia 3</p>
+                  <h3>Semana 1 completa</h3>
+                  <p>28 min · Carrera mas larga: 01:00</p>
+                </div>
+              </article>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Pantalla de sesion activa -->
+      <section id="session" class="screen screen-session" aria-labelledby="session-title" hidden>
+        <header class="session-header">
+          <div>
+            <p class="workout-meta">Semana 1 · Dia 1</p>
+            <h1 id="session-title">Primeros pasos</h1>
+          </div>
+          <button class="button button-secondary" type="button">Salir</button>
+        </header>
+
+        <div class="session-progress" aria-label="Progreso de la sesion">
+          <span class="session-progress-fill"></span>
+        </div>
+
+        <section class="timer-panel" aria-labelledby="timer-phase">
+          <p id="timer-phase" class="timer-phase">Calentamiento</p>
+          <time class="timer-value" datetime="PT5M">05:00</time>
+          <p class="timer-next">Siguiente: carrera · 01:00</p>
+        </section>
+
+        <div class="session-controls">
+          <button class="button button-primary button-large" type="button">Iniciar sesion</button>
+          <p>Tiempo transcurrido: 00:00 / 28 min</p>
+        </div>
+      </section>
+
+      <!-- Pantalla de sesion completada -->
+      <section id="complete" class="screen screen-complete" aria-labelledby="complete-title" hidden>
+        <header class="screen-header screen-header-centered">
+          <p class="completion-mark" aria-hidden="true">OK</p>
+          <p class="eyebrow">Sesion completada</p>
+          <h1 id="complete-title">Buen trabajo.</h1>
+          <p class="screen-intro">Semana 1 · Dia 1 · Primeros pasos</p>
+        </header>
+
+        <dl class="workout-summary workout-summary-complete">
+          <div>
+            <dt>Duracion</dt>
+            <dd>28:00</dd>
+          </div>
+          <div>
+            <dt>Tiempo de carrera</dt>
+            <dd>08:00</dd>
+          </div>
+          <div>
+            <dt>Intervalos</dt>
+            <dd>18</dd>
+          </div>
+        </dl>
+
+        <section class="rpe-selector" aria-labelledby="rpe-title">
+          <h2 id="rpe-title">Como percibiste el esfuerzo?</h2>
+          <p>1 es muy ligero · 10 es esfuerzo maximo</p>
+          <div class="rpe-options" role="group" aria-label="Esfuerzo percibido del 1 al 10">
+            <button type="button">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <button type="button">4</button>
+            <button type="button" aria-pressed="true">5</button>
+            <button type="button">6</button>
+            <button type="button">7</button>
+            <button type="button">8</button>
+            <button type="button">9</button>
+            <button type="button">10</button>
+          </div>
+        </section>
+
+        <button class="button button-primary button-large" type="button">Guardar sesion</button>
+      </section>
+
+      <!-- Pantalla de progreso -->
+      <section id="progress" class="screen screen-progress" aria-labelledby="progress-title" hidden>
+        <header class="screen-header">
+          <p class="eyebrow">Tu recorrido</p>
+          <h1 id="progress-title">Progreso</h1>
+        </header>
+
+        <section class="stats-grid stats-grid-progress" aria-label="Resumen del progreso">
+          <article class="stat-card">
+            <p>Sesiones</p>
+            <strong>0 <span>/ 24</span></strong>
+          </article>
+          <article class="stat-card">
+            <p>Semana</p>
+            <strong>0 <span>/ 8</span></strong>
+          </article>
+          <article class="stat-card">
+            <p>Tiempo total</p>
+            <strong>0 <span>min</span></strong>
+          </article>
+          <article class="stat-card">
+            <p>RPE medio</p>
+            <strong>--</strong>
+          </article>
+        </section>
+
+        <section class="history-card" aria-labelledby="history-title">
+          <h2 id="history-title">Historial de sesiones</h2>
+          <p>Aun no hay sesiones registradas.</p>
+        </section>
+      </section>
+    </main>
+
+    <nav id="app-navigation" class="bottom-navigation" aria-label="Navegacion principal">
+      <a href="#home" class="navigation-item navigation-item-active">Inicio</a>
+      <a href="#plan" class="navigation-item">Plan</a>
+      <a href="#progress" class="navigation-item">Progreso</a>
+    </nav>
+  </body>
+</html>
