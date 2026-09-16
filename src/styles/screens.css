@@ -82,6 +82,18 @@
   text-transform: uppercase;
 }
 
+.timer-phase[data-phase="run"] {
+  color: var(--color-run);
+}
+
+.timer-phase[data-phase="walk"] {
+  color: var(--color-walk);
+}
+
+.timer-phase[data-phase="cooldown"] {
+  color: var(--color-cooldown);
+}
+
 .timer-value {
   margin-top: 8px;
   color: var(--color-text);

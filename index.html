@@ -105,7 +105,7 @@
             <p id="session-meta" class="workout-meta">Semana 1 · Dia 1</p>
             <h1 id="session-title">Primeros pasos</h1>
           </div>
-          <button class="button button-secondary" type="button">Salir</button>
+          <button class="button button-secondary" type="button" data-action="exit-session">Salir</button>
         </header>
 
         <div class="session-progress" aria-label="Progreso de la sesion">
@@ -114,13 +114,13 @@
 
         <section class="timer-panel" aria-labelledby="timer-phase">
           <p id="timer-phase" class="timer-phase">Calentamiento</p>
-          <time class="timer-value" datetime="PT5M">05:00</time>
-          <p class="timer-next">Siguiente: carrera · 01:00</p>
+          <time id="timer-value" class="timer-value" datetime="PT5M">05:00</time>
+          <p id="timer-next" class="timer-next">Siguiente: carrera · 01:00</p>
         </section>
 
         <div class="session-controls">
-          <button class="button button-primary button-large" type="button">Iniciar sesion</button>
-          <p>Tiempo transcurrido: 00:00 / 28 min</p>
+          <button id="session-toggle" class="button button-primary button-large" type="button" data-action="start-session">Iniciar sesion</button>
+          <p id="session-elapsed">Tiempo transcurrido: 00:00 / 28 min</p>
         </div>
       </section>
 
@@ -209,7 +209,9 @@
     </nav>
 
     <script src="src/data/training-plan.js"></script>
+    <script src="src/utils/time.js"></script>
     <script src="src/state/app-state.js"></script>
+    <script src="src/state/session-state.js"></script>
     <script src="src/services/workout-service.js"></script>
     <script src="src/app.js"></script>
   </body>

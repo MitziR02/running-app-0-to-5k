@@ -60,6 +60,22 @@
   color: #020c08;
 }
 
+.session-controls .button-primary[data-phase="paused"] {
+  background: var(--color-walk);
+  box-shadow: 0 0 28px rgba(79, 172, 254, 0.22);
+}
+
+.session-controls .button-primary[data-phase="running"] {
+  background: var(--color-warmup);
+  box-shadow: 0 0 28px rgba(245, 158, 11, 0.22);
+}
+
+.session-controls .button-primary[data-phase="completed"] {
+  background: var(--color-muted);
+  box-shadow: none;
+  cursor: default;
+}
+
 .button-secondary {
   border-color: var(--color-border);
   background: var(--color-card-raised);
