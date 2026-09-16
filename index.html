@@ -49,29 +49,7 @@
           </p>
         </header>
 
-        <section class="workout-card" aria-labelledby="next-workout-title">
-          <div class="card-header">
-            <p class="status-label">Siguiente sesion</p>
-            <p class="workout-meta">Semana 1 · Dia 1</p>
-          </div>
-          <h2 id="next-workout-title">Primeros pasos</h2>
-          <p>8 intervalos cortos de carrera con recuperaciones caminando.</p>
-          <dl class="workout-summary">
-            <div>
-              <dt>Duracion</dt>
-              <dd>28 min</dd>
-            </div>
-            <div>
-              <dt>Intervalos</dt>
-              <dd>18</dd>
-            </div>
-            <div>
-              <dt>Tiempo de carrera</dt>
-              <dd>08:00</dd>
-            </div>
-          </dl>
-          <button class="button button-primary" type="button">Iniciar sesion</button>
-        </section>
+        <section id="next-workout" class="workout-card" aria-labelledby="next-workout-title"></section>
 
         <section class="week-progress" aria-labelledby="week-progress-title">
           <div class="section-heading">
@@ -117,24 +95,7 @@
           </div>
         </section>
 
-        <div class="week-list">
-          <details class="week-card week-card-current" open>
-            <summary class="week-card-toggle"><span class="week-number">1</span><span class="week-card-title"><strong>Semana 1</strong><small>0/3 completadas · En curso</small></span><span class="week-card-indicator" aria-hidden="true"></span></summary>
-            <div class="week-sessions">
-              <article class="workout-row workout-row-current"><div class="workout-row-content"><p class="workout-day">Dia 1 · Siguiente</p><h3>Primeros pasos</h3><p>28 min · Carrera mas larga: 01:00</p><div class="interval-timeline" aria-label="Calentamiento, carrera y caminata"><span class="interval interval-warmup"></span><span class="interval interval-run"></span><span class="interval interval-walk"></span><span class="interval interval-run"></span><span class="interval interval-walk"></span><span class="interval interval-run"></span></div></div><button class="button button-secondary" type="button">Comenzar</button></article>
-              <article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 2</p><h3>Encontrar el ritmo</h3><p>28 min · Carrera mas larga: 01:00</p></div></article>
-              <article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 3</p><h3>Semana 1 completa</h3><p>28 min · Carrera mas larga: 01:00</p></div></article>
-            </div>
-          </details>
-
-          <details class="week-card"><summary class="week-card-toggle"><span class="week-number">2</span><span class="week-card-title"><strong>Semana 2</strong><small>0/3 completadas</small></span><span class="week-card-indicator" aria-hidden="true"></span></summary><div class="week-sessions"><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 1</p><h3>Zancadas mas largas</h3><p>31 min · Carrera mas larga: 01:30</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 2</p><h3>Construir resistencia</h3><p>31 min · Carrera mas larga: 01:30</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 3</p><h3>Semana 2 completa</h3><p>31 min · Carrera mas larga: 01:30</p></div></article></div></details>
-          <details class="week-card"><summary class="week-card-toggle"><span class="week-number">3</span><span class="week-card-title"><strong>Semana 3</strong><small>0/3 completadas</small></span><span class="week-card-indicator" aria-hidden="true"></span></summary><div class="week-sessions"><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 1</p><h3>Bloques de tres minutos</h3><p>29 min · Carrera mas larga: 03:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 2</p><h3>Esfuerzo constante</h3><p>29 min · Carrera mas larga: 03:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 3</p><h3>Cierre de la semana 3</h3><p>29 min · Carrera mas larga: 03:00</p></div></article></div></details>
-          <details class="week-card"><summary class="week-card-toggle"><span class="week-number">4</span><span class="week-card-title"><strong>Semana 4</strong><small>0/3 completadas</small></span><span class="week-card-indicator" aria-hidden="true"></span></summary><div class="week-sessions"><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 1</p><h3>Cinco minutos</h3><p>32 min · Carrera mas larga: 05:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 2</p><h3>Repetir el desafio</h3><p>32 min · Carrera mas larga: 05:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 3</p><h3>Un mes en movimiento</h3><p>32 min · Carrera mas larga: 05:00</p></div></article></div></details>
-          <details class="week-card week-card-locked"><summary class="week-card-toggle"><span class="week-number">5</span><span class="week-card-title"><strong>Semana 5</strong><small>Disponible al completar la semana 4</small></span><span class="week-card-indicator" aria-hidden="true"></span></summary><div class="week-sessions"><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 1</p><h3>Tres bloques de cinco</h3><p>33 min · Carrera mas larga: 05:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 2</p><h3>Bloques de ocho minutos</h3><p>31 min · Carrera mas larga: 08:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 3</p><h3>Primera carrera de 20 minutos</h3><p>30 min · Carrera mas larga: 20:00</p></div></article></div></details>
-          <details class="week-card week-card-locked"><summary class="week-card-toggle"><span class="week-number">6</span><span class="week-card-title"><strong>Semana 6</strong><small>Disponible al completar la semana 5</small></span><span class="week-card-indicator" aria-hidden="true"></span></summary><div class="week-sessions"><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 1</p><h3>Volver a los intervalos</h3><p>33 min · Carrera mas larga: 08:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 2</p><h3>Bloques de diez minutos</h3><p>33 min · Carrera mas larga: 10:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 3</p><h3>Carrera de 22 minutos</h3><p>32 min · Carrera mas larga: 22:00</p></div></article></div></details>
-          <details class="week-card week-card-locked"><summary class="week-card-toggle"><span class="week-number">7</span><span class="week-card-title"><strong>Semana 7</strong><small>Disponible al completar la semana 6</small></span><span class="week-card-indicator" aria-hidden="true"></span></summary><div class="week-sessions"><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 1</p><h3>25 minutos</h3><p>35 min · Carrera mas larga: 25:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 2</p><h3>25 minutos otra vez</h3><p>35 min · Carrera mas larga: 25:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 3</p><h3>Los ultimos 25</h3><p>35 min · Carrera mas larga: 25:00</p></div></article></div></details>
-          <details class="week-card week-card-locked"><summary class="week-card-toggle"><span class="week-number">8</span><span class="week-card-title"><strong>Semana 8</strong><small>El ultimo tramo hasta 5 km</small></span><span class="week-card-indicator" aria-hidden="true"></span></summary><div class="week-sessions"><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 1</p><h3>28 minutos</h3><p>38 min · Carrera mas larga: 28:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 2</p><h3>Penultima sesion</h3><p>38 min · Carrera mas larga: 28:00</p></div></article><article class="workout-row"><div class="workout-row-content"><p class="workout-day">Dia 3</p><h3>5 km · Lo conseguiste</h3><p>40 min · Carrera mas larga: 30:00</p></div></article></div></details>
-        </div>
+        <div id="week-list" class="week-list"></div>
       </section>
 
       <!-- Pantalla de sesion activa -->
@@ -246,6 +207,7 @@
       <a href="#progress" class="navigation-item">Progreso</a>
     </nav>
 
+    <script src="src/data/training-plan.js"></script>
     <script src="src/app.js"></script>
   </body>
 </html>

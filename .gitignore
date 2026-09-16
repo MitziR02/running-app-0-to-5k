@@ -144,3 +144,6 @@ vite.config.ts.timestamp-*
 
 # Base directory
 /base/
+
+# Local technical roadmap
+SPECIFICATIONS.md
