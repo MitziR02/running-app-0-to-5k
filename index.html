@@ -54,7 +54,7 @@
         <section class="week-progress" aria-labelledby="week-progress-title">
           <div class="section-heading">
             <h2 id="week-progress-title">Progreso de la semana</h2>
-            <span>0/3 sesiones</span>
+            <span id="home-week-progress-label">0/3 sesiones</span>
           </div>
           <div class="progress-bar" role="progressbar" aria-label="Progreso semanal" aria-valuenow="0" aria-valuemin="0" aria-valuemax="3">
             <span class="progress-bar-fill"></span>
@@ -64,15 +64,15 @@
         <section class="stats-grid" aria-label="Estadisticas generales">
           <article class="stat-card">
             <p>Sesiones</p>
-            <strong>0 <span>/ 24</span></strong>
+            <strong id="home-completed-count">0 <span>/ 24</span></strong>
           </article>
           <article class="stat-card">
             <p>Tiempo total</p>
-            <strong>--</strong>
+            <strong id="home-total-time">--</strong>
           </article>
           <article class="stat-card">
             <p>RPE medio</p>
-            <strong>-- <span>/ 10</span></strong>
+            <strong id="home-average-rpe">-- <span>/ 10</span></strong>
           </article>
         </section>
       </section>
@@ -88,7 +88,7 @@
         <section class="program-progress" aria-label="Progreso hacia 5 km">
           <div class="section-heading">
             <h2>Camino a 5 km</h2>
-            <span>0/24 sesiones</span>
+            <span id="plan-progress-label">0/24 sesiones</span>
           </div>
           <div class="progress-bar" role="progressbar" aria-label="Progreso hacia 5 km" aria-valuenow="0" aria-valuemin="0" aria-valuemax="24">
             <span class="progress-bar-fill"></span>
@@ -102,7 +102,7 @@
       <section id="session" class="screen screen-session" aria-labelledby="session-title" hidden>
         <header class="session-header">
           <div>
-            <p class="workout-meta">Semana 1 · Dia 1</p>
+            <p id="session-meta" class="workout-meta">Semana 1 · Dia 1</p>
             <h1 id="session-title">Primeros pasos</h1>
           </div>
           <button class="button button-secondary" type="button">Salir</button>
@@ -178,25 +178,26 @@
         <section class="stats-grid stats-grid-progress" aria-label="Resumen del progreso">
           <article class="stat-card">
             <p>Sesiones</p>
-            <strong>0 <span>/ 24</span></strong>
+            <strong id="progress-completed-count">0 <span>/ 24</span></strong>
           </article>
           <article class="stat-card">
             <p>Semana</p>
-            <strong>0 <span>/ 8</span></strong>
+            <strong id="progress-current-week">0 <span>/ 8</span></strong>
           </article>
           <article class="stat-card">
             <p>Tiempo total</p>
-            <strong>0 <span>min</span></strong>
+            <strong id="progress-total-time">0 <span>min</span></strong>
           </article>
           <article class="stat-card">
             <p>RPE medio</p>
-            <strong>--</strong>
+            <strong id="progress-average-rpe">--</strong>
           </article>
         </section>
 
         <section class="history-card" aria-labelledby="history-title">
           <h2 id="history-title">Historial de sesiones</h2>
-          <p>Aun no hay sesiones registradas.</p>
+          <p id="history-empty-state">Aun no hay sesiones registradas.</p>
+          <div id="history-list"></div>
         </section>
       </section>
     </main>
@@ -208,6 +209,8 @@
     </nav>
 
     <script src="src/data/training-plan.js"></script>
+    <script src="src/state/app-state.js"></script>
+    <script src="src/services/workout-service.js"></script>
     <script src="src/app.js"></script>
   </body>
 </html>
