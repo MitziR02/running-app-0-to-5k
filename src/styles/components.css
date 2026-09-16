@@ -84,6 +84,22 @@
   background: var(--color-card);
 }
 
+
+.history-entry {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(28, 53, 85, 0.65);
+  color: var(--color-subtle);
+  font-size: 12px;
+  text-align: left;
+}
+
+.history-entry strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+}
 .workout-card {
   overflow: hidden;
   padding: 22px;
