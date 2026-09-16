@@ -68,27 +68,15 @@ function getWeeks() {
   return [...new Set(window.trainingPlan.map((session) => session.week))];
 }
 
-function getStateMetrics(state) {
-  const completedCount = state.completedSessions.length;
-  const currentWeek = workoutService.getUnlockedWeek(state);
-  const currentWeekCount = workoutService.getCompletedCountForWeek(currentWeek, state);
-  const totalSeconds = state.history.reduce((total, entry) => total + (entry.duration || 0), 0);
-  const rpeEntries = state.history.filter((entry) => Number.isFinite(entry.rpe));
-  const averageRpe = rpeEntries.length
-    ? (rpeEntries.reduce((total, entry) => total + entry.rpe, 0) / rpeEntries.length).toFixed(1)
-    : null;
-
-  return { completedCount, currentWeek, currentWeekCount, totalSeconds, averageRpe };
-}
-
 function renderStats(state) {
-  const metrics = getStateMetrics(state);
+  const metrics = window.metricsUtils.getStateMetrics(state, workoutService, 24);
+  const completedCount = metrics.completedUnique;
 
   if (stateElements.homeWeekProgressLabel) {
     stateElements.homeWeekProgressLabel.textContent = `${metrics.currentWeekCount}/3 sesiones`;
   }
   if (stateElements.homeCompletedCount) {
-    stateElements.homeCompletedCount.innerHTML = `${metrics.completedCount} <span>/ 24</span>`;
+    stateElements.homeCompletedCount.innerHTML = `${completedCount} <span>/ 24</span>`;
   }
   if (stateElements.homeTotalTime) {
     stateElements.homeTotalTime.textContent = metrics.totalSeconds ? formatMinutes(metrics.totalSeconds) : '--';
@@ -97,10 +85,10 @@ function renderStats(state) {
     stateElements.homeAverageRpe.innerHTML = metrics.averageRpe ? `${metrics.averageRpe} <span>/ 10</span>` : '-- <span>/ 10</span>';
   }
   if (stateElements.planProgressLabel) {
-    stateElements.planProgressLabel.textContent = `${metrics.completedCount}/24 sesiones`;
+    stateElements.planProgressLabel.textContent = `${completedCount}/24 sesiones`;
   }
   if (stateElements.progressCompletedCount) {
-    stateElements.progressCompletedCount.innerHTML = `${metrics.completedCount} <span>/ 24</span>`;
+    stateElements.progressCompletedCount.innerHTML = `${completedCount} <span>/ 24</span>`;
   }
   if (stateElements.progressCurrentWeek) {
     stateElements.progressCurrentWeek.innerHTML = `${metrics.currentWeek} <span>/ 8</span>`;
@@ -113,25 +101,50 @@ function renderStats(state) {
   }
   stateElements.progressBars.forEach((progressBar, index) => {
     const maximum = Number(progressBar.getAttribute('aria-valuemax'));
-    const value = index === 0 ? metrics.currentWeekCount : metrics.completedCount;
+    const value = index === 0 ? metrics.currentWeekCount : completedCount;
     const percentage = maximum ? Math.min((value / maximum) * 100, 100) : 0;
     const fill = progressBar.querySelector('.progress-bar-fill');
 
     progressBar.setAttribute('aria-valuenow', value.toString());
+    progressBar.setAttribute('aria-valuetext', `${percentage.toFixed(0)}%`);
     if (fill) {
       fill.style.width = `${percentage}%`;
     }
   });
+
+  const history = metrics.history;
+  const showHistoryEmpty = history.length === 0;
+  const isPlanCompleted = completedCount >= 24;
+
   if (stateElements.historyEmptyState) {
-    stateElements.historyEmptyState.hidden = state.history.length > 0;
+    stateElements.historyEmptyState.hidden = !showHistoryEmpty && !isPlanCompleted;
+    stateElements.historyEmptyState.textContent = showHistoryEmpty
+      ? 'Aun no hay sesiones registradas.'
+      : 'Plan completado. Puedes repetir cualquier sesion desde el plan.';
   }
+
   if (stateElements.historyList) {
-    stateElements.historyList.innerHTML = state.history.map((entry) => `
-      <article class="history-entry">
-        <strong>${entry.sessionKey}</strong>
-        <span>${entry.rpe ? `RPE ${entry.rpe}` : 'Sin RPE'} · ${formatMinutes(entry.duration || 0)}</span>
-      </article>
-    `).join('');
+    stateElements.historyList.innerHTML = history.map((entry) => {
+      const session = window.trainingPlan.find((current) => (
+        workoutService.getSessionKey(current) === entry.sessionKey
+      ));
+      const sessionTitle = session ? `${session.week}-${session.day} · ${session.title}` : entry.sessionKey;
+      const rpeLabel = Number.isInteger(entry.rpe) ? `RPE ${entry.rpe}` : 'Sin RPE';
+      const dateLabel = window.metricsUtils.formatDateLabel(entry.completedAt);
+
+      return `
+        <article class="history-entry">
+          <div class="history-entry-header">
+            <strong>${dateLabel}</strong>
+            <span>${rpeLabel}</span>
+          </div>
+          <div class="history-entry-body">
+            <span>${sessionTitle}</span>
+            <span>${formatMinutes(entry.duration || 0)}</span>
+          </div>
+        </article>
+      `;
+    }).join('');
   }
 }
 
