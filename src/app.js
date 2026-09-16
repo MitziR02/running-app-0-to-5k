@@ -45,10 +45,17 @@ const stateElements = {
   sessionToggle: document.querySelector('#session-toggle'),
   sessionElapsed: document.querySelector('#session-elapsed'),
   sessionProgress: document.querySelector('.session-progress-fill'),
+  completeMeta: document.querySelector('#complete-meta'),
+  completeDuration: document.querySelector('#complete-duration'),
+  completeRunDuration: document.querySelector('#complete-run-duration'),
+  completeIntervalCount: document.querySelector('#complete-interval-count'),
+  saveSession: document.querySelector('#save-session'),
+  rpeOptions: [...document.querySelectorAll('[data-rpe]')],
   progressBars: [...document.querySelectorAll('.progress-bar')],
 };
 
 let timerInterval = null;
+let selectedRpe = null;
 
 const formatDuration = window.timeUtils.formatDuration;
 
@@ -233,8 +240,55 @@ function renderSessionState(timerState) {
   stateElements.sessionToggle.disabled = timerState.phase === 'completed';
 
   if (timerState.phase === sessionState.phases.COMPLETED && window.location.hash !== '#complete') {
+    renderCompletion(timerState);
     window.location.hash = 'complete';
   }
+}
+
+function renderCompletion(timerState) {
+  const session = window.trainingPlan.find((current) => (
+    workoutService.getSessionKey(current) === timerState.sessionKey
+  ));
+
+  if (!session) {
+    return;
+  }
+
+  selectedRpe = null;
+  stateElements.completeMeta.textContent = `Semana ${session.week} · Dia ${session.day} · ${session.title}`;
+  stateElements.completeDuration.textContent = formatDuration(timerState.elapsedSeconds);
+  stateElements.completeRunDuration.textContent = formatDuration(window.trainingPlanUtils.getRunDuration(session));
+  stateElements.completeIntervalCount.textContent = session.intervals.length.toString();
+  stateElements.saveSession.disabled = true;
+  stateElements.rpeOptions.forEach((option) => option.setAttribute('aria-pressed', 'false'));
+}
+
+function handleRpeSelection(trigger) {
+  selectedRpe = Number(trigger.dataset.rpe);
+  stateElements.rpeOptions.forEach((option) => {
+    option.setAttribute('aria-pressed', option === trigger ? 'true' : 'false');
+  });
+  stateElements.saveSession.disabled = false;
+}
+
+function saveCompletedSession() {
+  const timerState = sessionState.getState();
+  const session = window.trainingPlan.find((current) => (
+    workoutService.getSessionKey(current) === timerState.sessionKey
+  ));
+
+  if (!session || timerState.phase !== sessionState.phases.COMPLETED || selectedRpe === null) {
+    return;
+  }
+
+  appState.completeSession(timerState.sessionKey, {
+    duration: timerState.elapsedSeconds,
+    runDuration: window.trainingPlanUtils.getRunDuration(session),
+    rpe: selectedRpe,
+  });
+  sessionState.reset();
+  selectedRpe = null;
+  window.location.hash = 'progress';
 }
 
 function syncTimerLoop(timerState) {
@@ -369,7 +423,17 @@ function handleSessionAction(event) {
 
   const action = trigger.dataset.action;
 
-  if (action === 'exit-session') {
+  if (action === 'select-rpe') {
+    handleRpeSelection(trigger);
+  } else if (action === 'save-session') {
+    saveCompletedSession();
+  } else if (action === 'reset-progress') {
+    if (window.confirm('Se borrara todo el progreso y el historial. Esta accion no se puede deshacer.')) {
+      sessionState.reset();
+      appState.reset();
+      window.location.hash = 'home';
+    }
+  } else if (action === 'exit-session') {
     sessionState.reset();
     appState.setActiveSession(null);
     window.location.hash = 'home';

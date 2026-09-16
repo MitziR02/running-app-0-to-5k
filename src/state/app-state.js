@@ -29,15 +29,17 @@
     activeSessionKey: null,
   };
 
-  let state = createState();
+  let state = createState(global.storageService ? global.storageService.load() : null);
   const subscribers = new Set();
 
-  function createState() {
+  function createState(savedState = null) {
     return {
       ...initialState,
-      completedSessions: [],
-      history: [],
-      agenda: { ...initialState.agenda },
+      completedSessions: savedState ? [...savedState.completedSessions] : [],
+      history: savedState ? [...savedState.history] : [],
+      agenda: savedState
+        ? { ...savedState.agenda, days: [...savedState.agenda.days] }
+        : { ...initialState.agenda },
     };
   }
 
@@ -53,6 +55,12 @@
   function notify() {
     const snapshot = cloneState();
     subscribers.forEach((subscriber) => subscriber(snapshot));
+  }
+
+  function persist() {
+    if (global.storageService) {
+      global.storageService.save(state);
+    }
   }
 
   function getState() {
@@ -81,11 +89,15 @@
       history: [...state.history, entry],
       activeSessionKey: null,
     };
+    persist();
     notify();
   }
 
   function reset() {
     state = createState();
+    if (global.storageService) {
+      global.storageService.clear();
+    }
     notify();
   }
 

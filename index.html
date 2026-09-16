@@ -130,21 +130,21 @@
           <p class="completion-mark" aria-hidden="true">OK</p>
           <p class="eyebrow">Sesion completada</p>
           <h1 id="complete-title">Buen trabajo.</h1>
-          <p class="screen-intro">Semana 1 · Dia 1 · Primeros pasos</p>
+          <p id="complete-meta" class="screen-intro">Semana 1 · Dia 1 · Primeros pasos</p>
         </header>
 
         <dl class="workout-summary workout-summary-complete">
           <div>
             <dt>Duracion</dt>
-            <dd>28:00</dd>
+            <dd id="complete-duration">28:00</dd>
           </div>
           <div>
             <dt>Tiempo de carrera</dt>
-            <dd>08:00</dd>
+            <dd id="complete-run-duration">08:00</dd>
           </div>
           <div>
             <dt>Intervalos</dt>
-            <dd>18</dd>
+            <dd id="complete-interval-count">18</dd>
           </div>
         </dl>
 
@@ -152,20 +152,20 @@
           <h2 id="rpe-title">Como percibiste el esfuerzo?</h2>
           <p>1 es muy ligero · 10 es esfuerzo maximo</p>
           <div class="rpe-options" role="group" aria-label="Esfuerzo percibido del 1 al 10">
-            <button type="button">1</button>
-            <button type="button">2</button>
-            <button type="button">3</button>
-            <button type="button">4</button>
-            <button type="button" aria-pressed="true">5</button>
-            <button type="button">6</button>
-            <button type="button">7</button>
-            <button type="button">8</button>
-            <button type="button">9</button>
-            <button type="button">10</button>
+            <button type="button" data-action="select-rpe" data-rpe="1" aria-pressed="false">1</button>
+            <button type="button" data-action="select-rpe" data-rpe="2" aria-pressed="false">2</button>
+            <button type="button" data-action="select-rpe" data-rpe="3" aria-pressed="false">3</button>
+            <button type="button" data-action="select-rpe" data-rpe="4" aria-pressed="false">4</button>
+            <button type="button" data-action="select-rpe" data-rpe="5" aria-pressed="false">5</button>
+            <button type="button" data-action="select-rpe" data-rpe="6" aria-pressed="false">6</button>
+            <button type="button" data-action="select-rpe" data-rpe="7" aria-pressed="false">7</button>
+            <button type="button" data-action="select-rpe" data-rpe="8" aria-pressed="false">8</button>
+            <button type="button" data-action="select-rpe" data-rpe="9" aria-pressed="false">9</button>
+            <button type="button" data-action="select-rpe" data-rpe="10" aria-pressed="false">10</button>
           </div>
         </section>
 
-        <button class="button button-primary button-large" type="button">Guardar sesion</button>
+        <button id="save-session" class="button button-primary button-large" type="button" data-action="save-session" disabled>Guardar sesion</button>
       </section>
 
       <!-- Pantalla de progreso -->
@@ -199,6 +199,7 @@
           <p id="history-empty-state">Aun no hay sesiones registradas.</p>
           <div id="history-list"></div>
         </section>
+        <button class="button button-secondary" type="button" data-action="reset-progress">Restablecer progreso</button>
       </section>
     </main>
 
@@ -210,6 +211,7 @@
 
     <script src="src/data/training-plan.js"></script>
     <script src="src/utils/time.js"></script>
+    <script src="src/services/storage-service.js"></script>
     <script src="src/state/app-state.js"></script>
     <script src="src/state/session-state.js"></script>
     <script src="src/services/workout-service.js"></script>
