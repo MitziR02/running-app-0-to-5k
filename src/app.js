@@ -23,6 +23,7 @@ const nextWorkoutContainer = document.querySelector('#next-workout');
 const weekListContainer = document.querySelector('#week-list');
 const appState = window.appState;
 const workoutService = window.workoutService;
+const sessionState = window.sessionState;
 
 const stateElements = {
   homeWeekProgressLabel: document.querySelector('#home-week-progress-label'),
@@ -38,14 +39,18 @@ const stateElements = {
   historyList: document.querySelector('#history-list'),
   sessionMeta: document.querySelector('#session-meta'),
   sessionTitle: document.querySelector('#session-title'),
+  timerPhase: document.querySelector('#timer-phase'),
+  timerValue: document.querySelector('#timer-value'),
+  timerNext: document.querySelector('#timer-next'),
+  sessionToggle: document.querySelector('#session-toggle'),
+  sessionElapsed: document.querySelector('#session-elapsed'),
+  sessionProgress: document.querySelector('.session-progress-fill'),
   progressBars: [...document.querySelectorAll('.progress-bar')],
 };
 
-function formatDuration(totalSeconds) {
-  const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-  const seconds = (totalSeconds % 60).toString().padStart(2, '0');
-  return `${minutes}:${seconds}`;
-}
+let timerInterval = null;
+
+const formatDuration = window.timeUtils.formatDuration;
 
 function formatMinutes(totalSeconds) {
   const minutes = Math.ceil(totalSeconds / 60);
@@ -182,6 +187,67 @@ function renderActiveSession(state) {
   stateElements.sessionTitle.textContent = session.title;
 }
 
+function getActiveSession() {
+  const activeSessionKey = appState.getState().activeSessionKey;
+  return window.trainingPlan.find((session) => (
+    workoutService.getSessionKey(session) === activeSessionKey
+  )) || null;
+}
+
+function renderSessionState(timerState) {
+  const session = getActiveSession();
+
+  if (!session || !stateElements.timerValue) {
+    return;
+  }
+
+  const currentInterval = timerState.currentInterval;
+  const nextInterval = timerState.nextInterval;
+  const phaseLabel = currentInterval ? currentInterval.label : 'Sesion completada';
+  const nextLabel = nextInterval
+    ? `Siguiente: ${nextInterval.label.toLowerCase()} · ${formatDuration(nextInterval.duration)}`
+    : 'Has completado todos los intervalos.';
+  const buttonLabels = {
+    idle: 'Iniciar sesion',
+    running: 'Pausar sesion',
+    paused: 'Reanudar sesion',
+    completed: 'Sesion completada',
+  };
+
+  stateElements.timerPhase.textContent = phaseLabel;
+  stateElements.timerPhase.dataset.phase = currentInterval ? currentInterval.type : 'completed';
+  stateElements.timerValue.textContent = formatDuration(timerState.remainingSeconds);
+  stateElements.timerValue.dateTime = `PT${timerState.remainingSeconds}S`;
+  stateElements.timerNext.textContent = nextLabel;
+  stateElements.sessionProgress.style.width = `${timerState.progress * 100}%`;
+  stateElements.sessionElapsed.textContent = `Tiempo transcurrido: ${formatDuration(timerState.elapsedSeconds)} / ${formatMinutes(timerState.totalDuration)}`;
+  stateElements.sessionToggle.textContent = buttonLabels[timerState.phase];
+  stateElements.sessionToggle.dataset.phase = timerState.phase;
+  stateElements.sessionToggle.dataset.action = timerState.phase === 'completed'
+    ? 'completed-session'
+    : timerState.phase === 'running'
+      ? 'pause-session'
+      : timerState.phase === 'paused'
+        ? 'resume-session'
+        : 'start-session';
+  stateElements.sessionToggle.disabled = timerState.phase === 'completed';
+
+  if (timerState.phase === sessionState.phases.COMPLETED && window.location.hash !== '#complete') {
+    window.location.hash = 'complete';
+  }
+}
+
+function syncTimerLoop(timerState) {
+  if (timerState.phase === sessionState.phases.RUNNING && timerInterval === null) {
+    timerInterval = window.setInterval(() => sessionState.tick(), 250);
+  }
+
+  if (timerState.phase !== sessionState.phases.RUNNING && timerInterval !== null) {
+    window.clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
 function renderIntervalTimeline(session) {
   return session.intervals.map((current) => (
     `<span class="interval interval-${current.type}" title="${current.label}: ${formatDuration(current.duration)}"></span>`
@@ -281,8 +347,39 @@ function handleSessionSelection(event) {
     return;
   }
 
+  const session = window.trainingPlan.find((current) => (
+    workoutService.getSessionKey(current) === trigger.dataset.sessionKey
+  ));
+
+  if (!session) {
+    return;
+  }
+
   appState.setActiveSession(trigger.dataset.sessionKey);
+  sessionState.configure(trigger.dataset.sessionKey, session.intervals);
   window.location.hash = 'session';
+}
+
+function handleSessionAction(event) {
+  const trigger = event.target.closest('[data-action]');
+
+  if (!trigger) {
+    return;
+  }
+
+  const action = trigger.dataset.action;
+
+  if (action === 'exit-session') {
+    sessionState.reset();
+    appState.setActiveSession(null);
+    window.location.hash = 'home';
+  } else if (action === 'start-session') {
+    sessionState.start();
+  } else if (action === 'pause-session') {
+    sessionState.pause();
+  } else if (action === 'resume-session') {
+    sessionState.resume();
+  }
 }
 
 function render(state) {
@@ -293,7 +390,13 @@ function render(state) {
 }
 
 document.addEventListener('click', handleSessionSelection);
+document.addEventListener('click', handleSessionAction);
 appState.subscribe(render);
+sessionState.subscribe((timerState) => {
+  renderSessionState(timerState);
+  syncTimerLoop(timerState);
+});
 render(appState.getState());
+renderSessionState(sessionState.getState());
 window.addEventListener('hashchange', handleRouteChange);
 handleRouteChange();
