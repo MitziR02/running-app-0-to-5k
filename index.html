@@ -226,6 +226,18 @@
             <button class="button button-secondary" type="submit">Guardar agenda</button>
           </form>
         </section>
+        <section class="backup-card" aria-labelledby="backup-title">
+          <div class="section-heading">
+            <h2 id="backup-title">Respaldo del progreso</h2>
+          </div>
+          <p>Guarda una copia del progreso para recuperarla en otro navegador o dispositivo.</p>
+          <div class="backup-actions">
+            <button class="button button-secondary" type="button" data-action="export-backup">Exportar respaldo</button>
+            <button class="button button-secondary" type="button" data-action="import-backup">Importar respaldo</button>
+            <input id="backup-file-input" type="file" accept="application/json,.json" hidden />
+          </div>
+          <p id="backup-message" class="backup-message" role="status" aria-live="polite" hidden></p>
+        </section>
         <button class="button button-secondary" type="button" data-action="reset-progress">Restablecer progreso</button>
       </section>
     </main>

@@ -114,6 +114,21 @@
     notify();
   }
 
+  function restore(savedState) {
+    const validatedState = global.storageService
+      ? global.storageService.validateState(savedState)
+      : null;
+
+    if (!validatedState) {
+      return false;
+    }
+
+    state = createState(validatedState);
+    persist();
+    notify();
+    return true;
+  }
+
   function reset() {
     state = createState();
     if (global.storageService) {
@@ -128,6 +143,7 @@
     setActiveSession,
     setAgenda,
     completeSession,
+    restore,
     reset,
   });
 })(window);
