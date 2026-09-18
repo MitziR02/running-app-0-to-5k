@@ -645,6 +645,15 @@ sessionState.subscribe((timerState) => {
   renderSessionState(timerState);
   syncTimerLoop(timerState);
 });
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(() => {
+        // PWA support is optional; the application remains usable without it.
+      });
+  });
+}
 render(appState.getState());
 renderSessionState(sessionState.getState());
 window.addEventListener('hashchange', handleRouteChange);
