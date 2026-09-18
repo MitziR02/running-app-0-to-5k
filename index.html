@@ -199,6 +199,33 @@
           <p id="history-empty-state">Aun no hay sesiones registradas.</p>
           <div id="history-list"></div>
         </section>
+
+        <section class="agenda-card" aria-labelledby="agenda-title">
+          <div class="section-heading">
+            <h2 id="agenda-title">Tu agenda</h2>
+            <span id="agenda-streak">0 dias</span>
+          </div>
+          <p id="agenda-next-label" class="agenda-next-label">Configura tres dias para organizar tus sesiones.</p>
+          <form id="agenda-form" class="agenda-form">
+            <fieldset>
+              <legend>Elige tres dias de entrenamiento</legend>
+              <div class="agenda-days">
+                <label><input type="checkbox" name="agenda-day" value="1" /> Lun</label>
+                <label><input type="checkbox" name="agenda-day" value="2" /> Mar</label>
+                <label><input type="checkbox" name="agenda-day" value="3" /> Mie</label>
+                <label><input type="checkbox" name="agenda-day" value="4" /> Jue</label>
+                <label><input type="checkbox" name="agenda-day" value="5" /> Vie</label>
+                <label><input type="checkbox" name="agenda-day" value="6" /> Sab</label>
+                <label><input type="checkbox" name="agenda-day" value="0" /> Dom</label>
+              </div>
+            </fieldset>
+             <p class="agenda-days-label">Los dias no seleccionados quedan como descanso.</p>
+            <label class="agenda-start-label" for="agenda-start-date">Inicio del plan</label>
+            <input id="agenda-start-date" name="agenda-start-date" type="date" />
+            <p id="agenda-form-message" class="agenda-form-message" role="alert" hidden></p>
+            <button class="button button-secondary" type="submit">Guardar agenda</button>
+          </form>
+        </section>
         <button class="button button-secondary" type="button" data-action="reset-progress">Restablecer progreso</button>
       </section>
     </main>
@@ -211,6 +238,7 @@
 
     <script src="src/data/training-plan.js"></script>
     <script src="src/utils/time.js"></script>
+    <script src="src/utils/dates.js"></script>
     <script src="src/utils/metrics.js"></script>
     <script src="src/services/storage-service.js"></script>
     <script src="src/state/app-state.js"></script>

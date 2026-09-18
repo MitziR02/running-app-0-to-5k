@@ -35,6 +35,12 @@ const stateElements = {
   progressCurrentWeek: document.querySelector('#progress-current-week'),
   progressTotalTime: document.querySelector('#progress-total-time'),
   progressAverageRpe: document.querySelector('#progress-average-rpe'),
+  agendaForm: document.querySelector('#agenda-form'),
+  agendaDays: [...document.querySelectorAll('[name="agenda-day"]')],
+  agendaStartDate: document.querySelector('#agenda-start-date'),
+  agendaStreak: document.querySelector('#agenda-streak'),
+  agendaNextLabel: document.querySelector('#agenda-next-label'),
+  agendaFormMessage: document.querySelector('#agenda-form-message'),
   historyEmptyState: document.querySelector('#history-empty-state'),
   historyList: document.querySelector('#history-list'),
   sessionMeta: document.querySelector('#session-meta'),
@@ -66,6 +72,46 @@ function formatMinutes(totalSeconds) {
 
 function getWeeks() {
   return [...new Set(window.trainingPlan.map((session) => session.week))];
+}
+
+function getTodayDateKey() {
+  return window.datesUtils.toDateKey(new Date());
+}
+
+function renderAgenda(state) {
+  const { agenda } = state;
+  const isConfigured = agenda.days.length === 3 && agenda.startDate;
+  const nextWorkout = workoutService.getNextSession(state);
+  const nextIndex = nextWorkout ? window.trainingPlan.indexOf(nextWorkout) : -1;
+  const nextDate = isConfigured && nextIndex >= 0
+    ? window.datesUtils.getSessionScheduledDate(agenda, nextIndex)
+    : null;
+
+  stateElements.agendaDays.forEach((input) => {
+    input.checked = agenda.days.includes(Number(input.value));
+  });
+  updateAgendaDayAvailability();
+  stateElements.agendaStartDate.value = agenda.startDate || '';
+  const streak = isConfigured ? window.datesUtils.getStreak(agenda, state.history) : 0;
+  stateElements.agendaStreak.textContent = `${streak} ${streak === 1 ? 'dia' : 'dias'}`;
+
+  if (!isConfigured) {
+    stateElements.agendaNextLabel.textContent = 'Configura tres dias para organizar tus sesiones.';
+  } else if (!nextDate) {
+    stateElements.agendaNextLabel.textContent = 'Plan completado. Puedes mantener la rutina repitiendo sesiones.';
+  } else {
+    const overdue = nextDate.dateKey < getTodayDateKey();
+    stateElements.agendaNextLabel.textContent = overdue
+      ? `Sesion atrasada desde el ${window.metricsUtils.formatDateLabel(nextDate.dateKey)}.`
+      : `Proxima sesion programada: ${window.metricsUtils.formatDateLabel(nextDate.dateKey)}.`;
+  }
+}
+
+function updateAgendaDayAvailability() {
+  const selectedCount = stateElements.agendaDays.filter((input) => input.checked).length;
+  stateElements.agendaDays.forEach((input) => {
+    input.disabled = selectedCount >= 3 && !input.checked;
+  });
 }
 
 function renderStats(state) {
@@ -166,6 +212,13 @@ function renderNextWorkout(state) {
 
   const totalDuration = window.trainingPlanUtils.getTotalDuration(nextWorkout);
   const runDuration = window.trainingPlanUtils.getRunDuration(nextWorkout);
+  const nextIndex = window.trainingPlan.indexOf(nextWorkout);
+  const scheduledDate = state.agenda.days.length === 3
+    ? window.datesUtils.getSessionScheduledDate(state.agenda, nextIndex)
+    : null;
+  const scheduledLabel = scheduledDate
+    ? `<p class="agenda-next-label">Sesion programada: ${window.metricsUtils.formatDateLabel(scheduledDate.dateKey)}</p>`
+    : '';
 
   nextWorkoutContainer.innerHTML = `
     <div class="card-header">
@@ -174,6 +227,7 @@ function renderNextWorkout(state) {
     </div>
     <h2 id="next-workout-title">${nextWorkout.title}</h2>
     <p>${nextWorkout.description}</p>
+    ${scheduledLabel}
     <dl class="workout-summary">
       <div>
         <dt>Duracion</dt>
@@ -459,8 +513,37 @@ function handleSessionAction(event) {
   }
 }
 
+function handleAgendaSubmit(event) {
+  if (event.target !== stateElements.agendaForm) {
+    return;
+  }
+
+  event.preventDefault();
+  const days = stateElements.agendaDays
+    .filter((input) => input.checked)
+    .map((input) => Number(input.value));
+  const startDate = stateElements.agendaStartDate.value;
+  const message = stateElements.agendaFormMessage;
+
+  if (days.length !== 3 || !window.datesUtils.parseDateKey(startDate)) {
+    message.hidden = false;
+    message.textContent = 'Selecciona exactamente tres dias y una fecha de inicio valida.';
+    return;
+  }
+
+  appState.setAgenda(days, startDate);
+  message.hidden = true;
+}
+
+function handleAgendaDayChange(event) {
+  if (event.target.matches('[name="agenda-day"]')) {
+    updateAgendaDayAvailability();
+  }
+}
+
 function render(state) {
   renderStats(state);
+  renderAgenda(state);
   renderNextWorkout(state);
   renderWeeks(state);
   renderActiveSession(state);
@@ -468,6 +551,8 @@ function render(state) {
 
 document.addEventListener('click', handleSessionSelection);
 document.addEventListener('click', handleSessionAction);
+document.addEventListener('change', handleAgendaDayChange);
+document.addEventListener('submit', handleAgendaSubmit);
 appState.subscribe(render);
 sessionState.subscribe((timerState) => {
   renderSessionState(timerState);

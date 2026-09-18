@@ -189,7 +189,8 @@
   }
 
   .screen-home .screen-header,
-  .screen-home .workout-card {
+  .screen-home .workout-card,
+  .screen-home .stats-grid {
     grid-column: span 2;
   }
 
