@@ -41,6 +41,8 @@ const stateElements = {
   agendaStreak: document.querySelector('#agenda-streak'),
   agendaNextLabel: document.querySelector('#agenda-next-label'),
   agendaFormMessage: document.querySelector('#agenda-form-message'),
+  backupFileInput: document.querySelector('#backup-file-input'),
+  backupMessage: document.querySelector('#backup-message'),
   historyEmptyState: document.querySelector('#history-empty-state'),
   historyList: document.querySelector('#history-list'),
   sessionMeta: document.querySelector('#session-meta'),
@@ -481,6 +483,80 @@ function handleSessionSelection(event) {
   window.location.hash = 'session';
 }
 
+function showBackupMessage(message, isError = false) {
+  if (!stateElements.backupMessage) {
+    return;
+  }
+
+  stateElements.backupMessage.hidden = !message;
+  stateElements.backupMessage.textContent = message;
+  stateElements.backupMessage.dataset.status = isError ? 'error' : 'success';
+}
+
+function exportBackup() {
+  const content = window.storageService.serializeBackup(appState.getState());
+  if (!content) {
+    showBackupMessage('No se pudo preparar el respaldo.', true);
+    return;
+  }
+
+  const today = window.datesUtils.toDateKey(new Date());
+  const blob = new Blob([content], { type: 'application/json' });
+  const downloadUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = downloadUrl;
+  link.download = `running-app-0-to-5k-backup-${today}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(downloadUrl);
+  showBackupMessage('Respaldo exportado correctamente.');
+}
+
+function getBackupErrorMessage(errorCode) {
+  const messages = {
+    json: 'El archivo no contiene un JSON valido.',
+    backupVersion: 'El archivo no es un respaldo compatible.',
+    version: 'La version del estado no es compatible.',
+    completedSessions: 'El respaldo contiene sesiones invalidas.',
+    history: 'El respaldo contiene un historial invalido.',
+    agenda: 'El respaldo contiene una agenda invalida.',
+  };
+  return messages[errorCode] || 'No se pudo validar el respaldo.';
+}
+
+async function importBackup(file) {
+  if (!file) {
+    return;
+  }
+
+  try {
+    const result = window.storageService.parseBackup(await file.text());
+    if (!result.valid) {
+      showBackupMessage(getBackupErrorMessage(result.error), true);
+      return;
+    }
+
+    if (!window.confirm('El respaldo reemplazara el progreso actual. Esta accion no se puede deshacer.')) {
+      showBackupMessage('Importacion cancelada.');
+      return;
+    }
+
+    sessionState.reset();
+    if (!appState.restore(result.state)) {
+      showBackupMessage('No se pudo restaurar el respaldo.', true);
+      return;
+    }
+
+    showBackupMessage('Respaldo importado correctamente.');
+    window.location.hash = 'progress';
+  } catch (error) {
+    showBackupMessage('No se pudo leer el archivo de respaldo.', true);
+  } finally {
+    stateElements.backupFileInput.value = '';
+  }
+}
+
 function handleSessionAction(event) {
   const trigger = event.target.closest('[data-action]');
 
@@ -494,6 +570,10 @@ function handleSessionAction(event) {
     handleRpeSelection(trigger);
   } else if (action === 'save-session') {
     saveCompletedSession();
+  } else if (action === 'export-backup') {
+    exportBackup();
+  } else if (action === 'import-backup') {
+    stateElements.backupFileInput.click();
   } else if (action === 'reset-progress') {
     if (window.confirm('Se borrara todo el progreso y el historial. Esta accion no se puede deshacer.')) {
       sessionState.reset();
@@ -541,6 +621,12 @@ function handleAgendaDayChange(event) {
   }
 }
 
+function handleBackupFileChange(event) {
+  if (event.target === stateElements.backupFileInput) {
+    importBackup(event.target.files[0]);
+  }
+}
+
 function render(state) {
   renderStats(state);
   renderAgenda(state);
@@ -552,6 +638,7 @@ function render(state) {
 document.addEventListener('click', handleSessionSelection);
 document.addEventListener('click', handleSessionAction);
 document.addEventListener('change', handleAgendaDayChange);
+document.addEventListener('change', handleBackupFileChange);
 document.addEventListener('submit', handleAgendaSubmit);
 appState.subscribe(render);
 sessionState.subscribe((timerState) => {

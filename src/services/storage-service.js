@@ -20,6 +20,7 @@
 (function createStorageService(global) {
   const STORAGE_KEY = 'running-app-0-to-5k-state';
   const VERSION = 1;
+  const BACKUP_VERSION = 1;
 
   function createEmptyState() {
     return {
@@ -94,6 +95,80 @@
     };
   }
 
+  function validateImportedState(candidate) {
+    if (!candidate || candidate.version !== VERSION) {
+      return { valid: false, error: 'version' };
+    }
+
+    const validSessionKeys = getValidSessionKeys();
+    if (!Array.isArray(candidate.completedSessions)
+      || candidate.completedSessions.some((key) => !validSessionKeys.has(key))) {
+      return { valid: false, error: 'completedSessions' };
+    }
+
+    if (!Array.isArray(candidate.history) || candidate.history.some((entry) => (
+      !entry
+      || !validSessionKeys.has(entry.sessionKey)
+      || !isValidDate(entry.completedAt)
+      || !Number.isFinite(entry.duration)
+      || entry.duration < 0
+      || !Number.isFinite(entry.runDuration)
+      || entry.runDuration < 0
+      || !Number.isInteger(entry.rpe)
+      || entry.rpe < 1
+      || entry.rpe > 10
+    ))) {
+      return { valid: false, error: 'history' };
+    }
+
+    const agenda = candidate.agenda;
+    if (!agenda || !Array.isArray(agenda.days)
+      || new Set(agenda.days).size !== agenda.days.length
+      || agenda.days.some((day) => !Number.isInteger(day) || day < 0 || day > 6)
+      || (agenda.days.length !== 0 && agenda.days.length !== 3)
+      || !(agenda.startDate === null || isValidDateKey(agenda.startDate))
+      || (agenda.days.length === 3 && !agenda.startDate)) {
+      return { valid: false, error: 'agenda' };
+    }
+
+    return { valid: true, state: validateState(candidate) };
+  }
+
+  function createBackup(state) {
+    const validatedState = validateState(state);
+    if (!validatedState) {
+      return null;
+    }
+
+    return {
+      backupVersion: BACKUP_VERSION,
+      exportedAt: new Date().toISOString(),
+      state: validatedState,
+    };
+  }
+
+  function serializeBackup(state) {
+    const backup = createBackup(state);
+    return backup ? JSON.stringify(backup, null, 2) : null;
+  }
+
+  function parseBackup(rawBackup) {
+    let candidate;
+
+    try {
+      candidate = typeof rawBackup === 'string' ? JSON.parse(rawBackup) : rawBackup;
+    } catch (error) {
+      return { valid: false, error: 'json' };
+    }
+
+    if (!candidate || candidate.backupVersion !== BACKUP_VERSION || !isValidDate(candidate.exportedAt)) {
+      return { valid: false, error: 'backupVersion' };
+    }
+
+    const result = validateImportedState(candidate.state);
+    return result.valid ? { valid: true, state: result.state } : result;
+  }
+
   function load() {
     try {
       const rawState = global.localStorage.getItem(STORAGE_KEY);
@@ -128,8 +203,13 @@
   global.storageService = Object.freeze({
     STORAGE_KEY,
     VERSION,
+    BACKUP_VERSION,
     createEmptyState,
     validateState,
+    validateImportedState,
+    createBackup,
+    serializeBackup,
+    parseBackup,
     load,
     save,
     clear,

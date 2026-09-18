@@ -92,6 +92,7 @@
 .week-progress,
 .program-progress,
 .agenda-card,
+.backup-card,
 .week-card,
 .stat-card,
 .history-card,
@@ -288,6 +289,35 @@
 
 .agenda-form-message {
   color: var(--color-warmup);
+}
+
+.backup-card {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.backup-card > p {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.backup-message {
+  font-size: 13px;
+}
+
+.backup-message[data-status="error"] {
+  color: var(--color-warmup);
+}
+
+.backup-message[data-status="success"] {
+  color: var(--color-run);
 }
 
 .section-heading {

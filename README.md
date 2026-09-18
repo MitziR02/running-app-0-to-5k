@@ -85,7 +85,6 @@ running-app-0-to-5k/
 La version actual esta pensada para validar la experiencia principal sin depender de datos persistidos fuera del navegador. Algunas evoluciones posibles son:
 
 - Permitir configurar el perfil y el objetivo de cada persona.
-- Añadir respaldo o sincronizacion del progreso.
 - Incorporar pruebas para el plan, el temporizador y el calculo de carga.
 - Separar el plan de entrenamiento de la interfaz para facilitar su mantenimiento.
 - Añadir accesibilidad, notificaciones y soporte para diferentes ritmos.
