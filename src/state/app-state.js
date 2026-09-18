@@ -77,6 +77,27 @@
     notify();
   }
 
+  function setAgenda(days, startDate) {
+    const uniqueDays = Array.isArray(days)
+      ? [...new Set(days)].sort((left, right) => left - right)
+      : [];
+    if (
+      uniqueDays.length !== 3
+      || uniqueDays.some((day) => !Number.isInteger(day) || day < 0 || day > 6)
+      || !global.datesUtils.parseDateKey(startDate)
+    ) {
+      return false;
+    }
+
+    state = {
+      ...state,
+      agenda: { days: uniqueDays, startDate },
+    };
+    persist();
+    notify();
+    return true;
+  }
+
   function completeSession(sessionKey, details) {
     const completedSessions = state.completedSessions.includes(sessionKey)
       ? state.completedSessions
@@ -105,6 +126,7 @@
     getState,
     subscribe,
     setActiveSession,
+    setAgenda,
     completeSession,
     reset,
   });

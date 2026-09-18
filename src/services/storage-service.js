@@ -39,6 +39,12 @@
     return typeof value === 'string' && !Number.isNaN(Date.parse(value));
   }
 
+  function isValidDateKey(value) {
+    return typeof value === 'string'
+      && /^\d{4}-\d{2}-\d{2}$/.test(value)
+      && !Number.isNaN(Date.parse(`${value}T00:00:00`));
+  }
+
   function validateState(candidate) {
     if (!candidate || candidate.version !== VERSION) {
       return null;
@@ -67,7 +73,12 @@
       ? [...new Set(agenda.days)].filter((day) => Number.isInteger(day) && day >= 0 && day <= 6)
       : null;
 
-    if (!completedSessions || !history || !days || days.length > 3) {
+    if (!completedSessions || !history || !days || (days.length !== 0 && days.length !== 3)) {
+      return null;
+    }
+
+    const startDate = agenda.startDate === null || isValidDateKey(agenda.startDate) ? agenda.startDate : null;
+    if (days.length === 3 && !startDate) {
       return null;
     }
 
@@ -77,7 +88,7 @@
       history,
       agenda: {
         days,
-        startDate: agenda.startDate === null || isValidDate(agenda.startDate) ? agenda.startDate : null,
+        startDate,
       },
       activeSessionKey: null,
     };

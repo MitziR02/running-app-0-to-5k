@@ -91,6 +91,7 @@
 .workout-card,
 .week-progress,
 .program-progress,
+.agenda-card,
 .week-card,
 .stat-card,
 .history-card,
@@ -208,9 +209,85 @@
 
 .week-progress,
 .program-progress,
+.agenda-card,
 .history-card,
 .rpe-selector {
   padding: 18px 20px;
+}
+
+.agenda-card {
+  display: grid;
+  gap: 14px;
+}
+
+.agenda-next-label,
+.agenda-days-label,
+.agenda-form-message {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.agenda-form {
+  display: grid;
+  gap: 12px;
+}
+
+.agenda-form fieldset {
+  display: grid;
+  gap: 10px;
+  border: 0;
+  padding: 0;
+}
+
+.agenda-form legend,
+.agenda-start-label {
+  margin-bottom: 2px;
+  color: var(--color-subtle);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.agenda-days {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.agenda-days label {
+  display: grid;
+  min-height: 40px;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-subtle);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.agenda-days label:has(input:checked) {
+  border-color: var(--color-run);
+  background: var(--color-run-soft);
+  color: var(--color-run);
+}
+
+.agenda-days input {
+  position: absolute;
+  opacity: 0;
+}
+
+.agenda-form input[type="date"] {
+  min-height: 42px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card-raised);
+  color: var(--color-text);
+  font: inherit;
+  padding: 8px 10px;
+}
+
+.agenda-form-message {
+  color: var(--color-warmup);
 }
 
 .section-heading {
