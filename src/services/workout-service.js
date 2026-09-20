@@ -48,6 +48,23 @@
     )) || null;
   }
 
+  function isSessionAvailable(session, state) {
+    if (!session || !isWeekUnlocked(session.week, state)) {
+      return false;
+    }
+
+    const completedKeys = getCompletedKeys(state);
+    if (completedKeys.has(getSessionKey(session))) {
+      return true;
+    }
+
+    const previousSession = global.trainingPlan.find((candidate) => (
+      candidate.week === session.week && candidate.day === session.day - 1
+    ));
+
+    return !previousSession || completedKeys.has(getSessionKey(previousSession));
+  }
+
   function getWeekStatus(week, state) {
     const completed = getCompletedCountForWeek(week, state);
     const unlocked = isWeekUnlocked(week, state);
@@ -62,6 +79,7 @@
     getUnlockedWeek,
     isWeekUnlocked,
     getNextSession,
+    isSessionAvailable,
     getWeekStatus,
   });
 })(window);

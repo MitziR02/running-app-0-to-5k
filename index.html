@@ -32,13 +32,13 @@
       </a>
     </header>
 
-    <main id="app" aria-live="polite">
+    <main id="app">
       <noscript>
         Esta aplicacion necesita JavaScript para mostrar el plan de entrenamiento.
       </noscript>
 
       <!-- Pantalla de inicio -->
-      <section id="home" class="screen screen-home" aria-labelledby="home-title">
+      <section id="home" class="screen screen-home" aria-labelledby="home-title" tabindex="-1">
         <header class="screen-header">
           <p class="eyebrow">Tu recorrido</p>
           <h1 id="home-title">Construye tu ritmo.</h1>
@@ -76,7 +76,7 @@
       </section>
 
       <!-- Pantalla del plan completo -->
-      <section id="plan" class="screen screen-plan" aria-labelledby="plan-title" hidden>
+      <section id="plan" class="screen screen-plan" aria-labelledby="plan-title" tabindex="-1" hidden>
         <header class="screen-header">
           <p class="eyebrow">Programa de 8 semanas</p>
           <h1 id="plan-title">Plan de entrenamiento</h1>
@@ -97,7 +97,7 @@
       </section>
 
       <!-- Pantalla de sesion activa -->
-      <section id="session" class="screen screen-session" aria-labelledby="session-title" hidden>
+      <section id="session" class="screen screen-session" aria-labelledby="session-title" tabindex="-1" hidden>
         <header class="session-header">
           <div>
             <p id="session-meta" class="workout-meta">Semana 1 · Dia 1</p>
@@ -106,14 +106,15 @@
           <button class="button button-secondary" type="button" data-action="exit-session">Salir</button>
         </header>
 
-        <div class="session-progress" aria-label="Progreso de la sesion">
+        <div class="session-progress" role="progressbar" aria-label="Progreso de la sesion" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-valuetext="0%">
           <span class="session-progress-fill"></span>
         </div>
 
         <section class="timer-panel" aria-labelledby="timer-phase">
           <p id="timer-phase" class="timer-phase">Calentamiento</p>
-          <time id="timer-value" class="timer-value" datetime="PT5M">05:00</time>
+          <time id="timer-value" class="timer-value" datetime="PT5M" aria-live="off">05:00</time>
           <p id="timer-next" class="timer-next">Siguiente: carrera · 01:00</p>
+          <p id="timer-announcement" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
         </section>
 
         <div class="session-controls">
@@ -123,7 +124,7 @@
       </section>
 
       <!-- Pantalla de sesion completada -->
-      <section id="complete" class="screen screen-complete" aria-labelledby="complete-title" hidden>
+      <section id="complete" class="screen screen-complete" aria-labelledby="complete-title" tabindex="-1" hidden>
         <header class="screen-header screen-header-centered">
           <p class="completion-mark" aria-hidden="true">OK</p>
           <p class="eyebrow">Sesion completada</p>
@@ -167,7 +168,7 @@
       </section>
 
       <!-- Pantalla de progreso -->
-      <section id="progress" class="screen screen-progress" aria-labelledby="progress-title" hidden>
+      <section id="progress" class="screen screen-progress" aria-labelledby="progress-title" tabindex="-1" hidden>
         <header class="screen-header">
           <p class="eyebrow">Tu recorrido</p>
           <h1 id="progress-title">Progreso</h1>
