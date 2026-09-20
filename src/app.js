@@ -64,6 +64,7 @@ const stateElements = {
 
 let timerInterval = null;
 let selectedRpe = null;
+let lastAnnouncedTimerState = null;
 
 const formatDuration = window.timeUtils.formatDuration;
 
@@ -295,7 +296,21 @@ function renderSessionState(timerState) {
   stateElements.timerValue.textContent = formatDuration(timerState.remainingSeconds);
   stateElements.timerValue.dateTime = `PT${timerState.remainingSeconds}S`;
   stateElements.timerNext.textContent = nextLabel;
+  const timerAnnouncement = document.querySelector('#timer-announcement');
+  const announcementKey = `${timerState.phase}:${timerState.currentIndex}`;
+  if (timerAnnouncement && announcementKey !== lastAnnouncedTimerState) {
+    if (timerState.phase === 'running' || timerState.phase === 'paused' || timerState.phase === 'completed') {
+      timerAnnouncement.textContent = timerState.phase === 'completed'
+        ? 'Sesion completada.'
+        : timerState.phase === 'paused'
+          ? 'Sesion pausada.'
+          : `Fase actual: ${phaseLabel}.`;
+    }
+    lastAnnouncedTimerState = announcementKey;
+  }
   stateElements.sessionProgress.style.width = `${timerState.progress * 100}%`;
+  stateElements.sessionProgress.parentElement.setAttribute('aria-valuenow', Math.round(timerState.progress * 100).toString());
+  stateElements.sessionProgress.parentElement.setAttribute('aria-valuetext', `${Math.round(timerState.progress * 100)}%`);
   stateElements.sessionElapsed.textContent = `Tiempo transcurrido: ${formatDuration(timerState.elapsedSeconds)} / ${formatMinutes(timerState.totalDuration)}`;
   stateElements.sessionToggle.textContent = buttonLabels[timerState.phase];
   stateElements.sessionToggle.dataset.phase = timerState.phase;
@@ -382,9 +397,10 @@ function renderWorkout(session, state, isCurrent, isLocked) {
   const currentClass = isCurrent ? ' workout-row-current' : '';
   const sessionKey = workoutService.getSessionKey(session);
   const isCompleted = state.completedSessions.includes(sessionKey);
+  const isAvailable = workoutService.isSessionAvailable(session, state);
   const nextLabel = isCurrent ? ' · Siguiente' : '';
-  const buttonLabel = isLocked ? 'Bloqueada' : isCompleted ? 'Repetir' : isCurrent ? 'Comenzar' : 'Ver sesion';
-  const disabled = isLocked ? ' disabled' : '';
+  const buttonLabel = isLocked || !isAvailable ? 'Bloqueada' : isCompleted ? 'Repetir' : isCurrent ? 'Comenzar' : 'Ver sesion';
+  const disabled = isLocked || !isAvailable ? ' disabled' : '';
 
   return `
     <article class="workout-row${currentClass}">
@@ -409,6 +425,8 @@ function renderWeeks(state) {
   }
 
   const weeks = getWeeks();
+  const nextSession = workoutService.getNextSession(state);
+  const nextSessionKey = nextSession ? workoutService.getSessionKey(nextSession) : null;
   weekListContainer.innerHTML = weeks.map((week) => {
     const sessions = window.trainingPlan.filter((session) => session.week === week);
     const weekStatus = workoutService.getWeekStatus(week, state);
@@ -436,7 +454,12 @@ function renderWeeks(state) {
           <span class="week-card-indicator" aria-hidden="true"></span>
         </summary>
         <div class="week-sessions">
-          ${sessions.map((session, index) => renderWorkout(session, state, isCurrent && index === 0, isLocked)).join('')}
+          ${sessions.map((session) => renderWorkout(
+            session,
+            state,
+            workoutService.getSessionKey(session) === nextSessionKey,
+            isLocked,
+          )).join('')}
         </div>
       </details>
     `;
@@ -455,8 +478,17 @@ function showScreen(screenId) {
   navigationItems.forEach((item) => {
     const isActive = item.getAttribute('href') === `#${targetId}`;
     item.classList.toggle('navigation-item-active', isActive);
-    item.setAttribute('aria-current', isActive ? 'page' : 'false');
+    if (isActive) {
+      item.setAttribute('aria-current', 'page');
+    } else {
+      item.removeAttribute('aria-current');
+    }
   });
+
+  const targetScreen = document.querySelector(`#${targetId}`);
+  if (targetScreen) {
+    targetScreen.focus({ preventScroll: true });
+  }
 }
 
 function handleRouteChange() {
