@@ -18,12 +18,68 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at 85% 0%, rgba(20, 232, 112, 0.08), transparent 32rem),
-    var(--color-bg);
+    radial-gradient(ellipse 520px 340px at 50% -100px, rgba(255, 201, 74, 0.1), transparent 70%),
+    linear-gradient(180deg, #2b253b 0%, #322a44 45%, #241e30 100%);
   color: var(--color-text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+body::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background-image: radial-gradient(rgba(244, 238, 219, 0.05) 0.7px, transparent 0.7px);
+  background-size: 5px 5px;
+  content: "";
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.ambient-scene {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient-moon {
+  position: absolute;
+  top: 8vh;
+  left: 50%;
+  width: min(42vw, 320px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 34%, rgba(255, 239, 188, 0.082) 0 5%, transparent 6%),
+    radial-gradient(circle at 68% 62%, rgba(196, 139, 117, 0.22) 0 8%, transparent 9%),
+    radial-gradient(circle, #e6bd85 0%, #d68d9b 58%, rgba(214, 141, 155, 0.05) 72%, transparent 73%);
+  box-shadow: 0 0 80px rgba(230, 189, 133, 0.2);
+  opacity: 0.72;
+  transform: translateX(-50%);
+}
+
+.ambient-mountain {
+  position: absolute;
+  right: -8vw;
+  bottom: -2vh;
+  left: -8vw;
+  height: 42vh;
+  clip-path: polygon(0 68%, 12% 48%, 23% 64%, 37% 28%, 49% 58%, 62% 36%, 76% 66%, 89% 42%, 100% 60%, 100% 100%, 0 100%);
+}
+
+.ambient-mountain-back {
+  background: linear-gradient(180deg, rgba(77, 67, 102, 0.72), rgba(55, 47, 74, 0.9));
+  opacity: 0.72;
+}
+
+.ambient-mountain-front {
+  bottom: -12vh;
+  height: 36vh;
+  clip-path: polygon(0 62%, 16% 38%, 31% 66%, 45% 44%, 59% 72%, 73% 34%, 88% 60%, 100% 46%, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, rgba(43, 37, 59, 0.92), #241e30 78%);
 }
 
 button,
@@ -46,8 +102,7 @@ a:focus-visible {
 }
 
 .screen:focus {
-  outline: 2px solid var(--color-run);
-  outline-offset: 6px;
+  outline: none;
 }
 
 .visually-hidden {
@@ -88,9 +143,11 @@ h3,
 }
 
 #app {
-  width: min(100%, 760px);
+  position: relative;
+  z-index: 1;
+  width: min(100%, 920px);
   margin: 0 auto;
-  padding: 0 20px 104px;
+  padding: 0 20px 112px;
 }
 
 noscript {
@@ -101,9 +158,14 @@ noscript {
 }
 
 @media (min-width: 760px) {
+  .app-header {
+    padding-right: 32px;
+    padding-left: 32px;
+  }
+
   #app {
-    padding-right: 28px;
-    padding-left: 28px;
+    padding-right: 32px;
+    padding-left: 32px;
   }
 }
 

@@ -31,6 +31,16 @@
   font-size: 16px;
 }
 
+.brand-mark svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
 .brand-name {
   color: var(--color-text);
 }
@@ -313,6 +323,52 @@
   gap: 8px;
 }
 
+.agenda-form .button-agenda-save {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--color-run), #e6a48a);
+  box-shadow: 0 8px 24px rgba(255, 201, 74, 0.2);
+  color: #2b253b;
+}
+
+.agenda-form .button-agenda-save:hover,
+.agenda-form .button-agenda-save:focus-visible {
+  background: linear-gradient(135deg, #ffd96e, #f0b39e);
+  box-shadow: 0 10px 28px rgba(255, 201, 74, 0.3);
+}
+
+.backup-actions .button-backup-export,
+.backup-actions .button-backup-import {
+  border-color: rgba(155, 181, 252, 0.42);
+  background: rgba(155, 181, 252, 0.12);
+  color: var(--color-text);
+}
+
+.backup-actions .button-backup-export:hover,
+.backup-actions .button-backup-export:focus-visible,
+.backup-actions .button-backup-import:hover,
+.backup-actions .button-backup-import:focus-visible {
+  border-color: var(--color-walk);
+  background: rgba(155, 181, 252, 0.22);
+  box-shadow: 0 8px 24px rgba(155, 181, 252, 0.14);
+}
+
+.button-reset {
+  border-color: rgba(232, 154, 184, 0.5);
+  background: rgba(232, 154, 184, 0.1);
+  color: #f2bdca;
+}
+
+.button-reset:hover,
+.button-reset:focus-visible {
+  border-color: var(--color-cooldown);
+  background: rgba(232, 154, 184, 0.2);
+  box-shadow: 0 8px 24px rgba(232, 154, 184, 0.16);
+}
+
+.button-reset:active {
+  background: rgba(214, 141, 155, 0.28);
+}
+
 .backup-message {
   font-size: 13px;
 }
@@ -567,4 +623,209 @@
   border-color: var(--color-run);
   background: var(--color-run-soft);
   color: var(--color-run);
+}
+
+/* Visual language inspired by new-ui, kept local for offline use. */
+.app-header {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 920px);
+  padding-top: 28px;
+}
+
+.brand {
+  color: var(--color-text);
+  letter-spacing: 0.04em;
+}
+
+.brand-mark {
+  border-color: rgba(255, 201, 74, 0.42);
+  border-radius: 50%;
+  background: var(--color-run-soft);
+  color: var(--color-run);
+  box-shadow: var(--shadow-glow);
+}
+
+.button {
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.button-primary {
+  background: var(--color-run);
+  box-shadow: var(--shadow-glow);
+  color: #241b11;
+}
+
+.button-secondary {
+  border-color: var(--color-border);
+  background: rgba(77, 67, 102, 0.66);
+  color: var(--color-text);
+}
+
+.button-secondary:hover,
+.button-secondary:focus-visible {
+  border-color: rgba(255, 201, 74, 0.62);
+  background: rgba(102, 88, 132, 0.74);
+}
+
+.workout-card,
+.week-progress,
+.program-progress,
+.agenda-card,
+.backup-card,
+.week-card,
+.stat-card,
+.history-card,
+.rpe-selector,
+.workout-summary-complete {
+  border-color: var(--color-border);
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+}
+
+.workout-card {
+  background:
+    linear-gradient(135deg, rgba(255, 201, 74, 0.16), rgba(232, 154, 184, 0.08) 54%, rgba(155, 181, 252, 0.06)),
+    var(--color-card);
+}
+
+.status-label,
+.eyebrow,
+.workout-day {
+  color: var(--color-run);
+}
+
+.progress-bar,
+.session-progress {
+  background: rgba(124, 112, 161, 0.28);
+}
+
+.progress-bar-fill,
+.session-progress-fill {
+  background: linear-gradient(90deg, var(--color-run), var(--color-warmup));
+  box-shadow: 0 0 12px rgba(255, 201, 74, 0.32);
+}
+
+.week-card-current {
+  border-color: rgba(255, 201, 74, 0.48);
+}
+
+.week-card-locked {
+  border-color: rgba(124, 112, 161, 0.24);
+  opacity: 0.76;
+}
+
+.week-number {
+  border-radius: 50%;
+  background: var(--color-run-soft);
+}
+
+.week-card-locked .week-number {
+  background: rgba(124, 112, 161, 0.24);
+}
+
+.workout-row {
+  border-bottom-color: rgba(124, 112, 161, 0.24);
+}
+
+.workout-row-current {
+  background: rgba(255, 201, 74, 0.07);
+}
+
+.interval-warmup { background: var(--color-warmup); }
+.interval-run { background: var(--color-run); }
+.interval-walk { background: var(--color-walk); }
+.interval-cooldown { background: var(--color-cooldown); }
+
+.bottom-navigation {
+  width: min(100%, 920px);
+  height: 78px;
+  border-top-color: rgba(124, 112, 161, 0.45);
+  background: rgba(43, 37, 59, 0.84);
+  backdrop-filter: blur(18px);
+}
+
+.navigation-item {
+  gap: 4px;
+  color: var(--color-muted);
+  font-size: 10px;
+}
+
+.navigation-item::before {
+  display: block;
+  color: currentColor;
+  font-size: 21px;
+  line-height: 1;
+}
+
+.navigation-item[href="#home"]::before { content: "○"; }
+.navigation-item[href="#plan"]::before { content: "▤"; }
+.navigation-item[href="#progress"]::before { content: "▥"; }
+
+.navigation-item[href="#progress"]::before {
+  display: none;
+}
+
+.navigation-icon {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+}
+
+.navigation-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.navigation-item-active {
+  color: var(--color-run);
+}
+
+.rpe-options button {
+  border-color: var(--color-border);
+  border-radius: 50%;
+  background: rgba(77, 67, 102, 0.66);
+}
+
+.rpe-options button[aria-pressed="true"] {
+  border-color: var(--color-run);
+  background: var(--color-run-soft);
+  box-shadow: 0 0 18px rgba(255, 201, 74, 0.18);
+  color: var(--color-run);
+}
+
+.backup-actions {
+  gap: 10px;
+}
+
+.backup-actions .button {
+  flex: 1 1 180px;
+}
+
+@media (max-width: 420px) {
+  .workout-row {
+    display: grid;
+  }
+
+  .workout-row .button {
+    width: 100%;
+  }
+
+  .workout-summary {
+    gap: 8px;
+  }
+
+  .workout-summary dd,
+  .stat-card strong {
+    font-size: 16px;
+  }
 }
