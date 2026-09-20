@@ -17,7 +17,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'running-app-0-to-5k-v2';
+const CACHE_NAME = 'running-app-0-to-5k-v3';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -35,8 +35,12 @@ const PRECACHE_URLS = [
   './src/state/app-state.js',
   './src/state/session-state.js',
   './src/app.js',
-  './assets/icons/icon-192.png',
-  './assets/icons/icon-512.png',
+  './src/img/android-chrome-192x192.png',
+  './src/img/android-chrome-512x512.png',
+  './src/img/apple-touch-icon.png',
+  './src/img/favicon-16x16.png',
+  './src/img/favicon-32x32.png',
+  './src/img/favicon.ico',
 ];
 
 self.addEventListener('install', (event) => {
