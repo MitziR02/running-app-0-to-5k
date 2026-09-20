@@ -26,6 +26,7 @@ const workoutService = window.workoutService;
 const sessionState = window.sessionState;
 
 const stateElements = {
+  homeGreeting: document.querySelector('#home-greeting'),
   homeWeekProgressLabel: document.querySelector('#home-week-progress-label'),
   homeCompletedCount: document.querySelector('#home-completed-count'),
   homeTotalTime: document.querySelector('#home-total-time'),
@@ -79,6 +80,23 @@ function getWeeks() {
 
 function getTodayDateKey() {
   return window.datesUtils.toDateKey(new Date());
+}
+
+function getGreeting(date = new Date()) {
+  const hour = date.getHours();
+  if (hour < 12) {
+    return 'Buenos dias';
+  }
+  if (hour < 19) {
+    return 'Buenas tardes';
+  }
+  return 'Buenas noches';
+}
+
+function renderGreeting() {
+  if (stateElements.homeGreeting) {
+    stateElements.homeGreeting.textContent = getGreeting();
+  }
 }
 
 function renderAgenda(state) {
@@ -660,6 +678,7 @@ function handleBackupFileChange(event) {
 }
 
 function render(state) {
+  renderGreeting();
   renderStats(state);
   renderAgenda(state);
   renderNextWorkout(state);

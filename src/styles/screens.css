@@ -22,6 +22,11 @@
   letter-spacing: 0;
 }
 
+.screen-header h1 {
+  color: var(--color-text);
+  font-weight: 900;
+}
+
 .screen-intro {
   max-width: 52ch;
   color: var(--color-subtle);
@@ -70,7 +75,8 @@
   justify-items: center;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  background: radial-gradient(circle, rgba(20, 232, 112, 0.1), transparent 64%), var(--color-card);
+  background: radial-gradient(circle, rgba(255, 201, 74, 0.12), transparent 64%), var(--color-card);
+  box-shadow: var(--shadow-card);
   text-align: center;
 }
 
@@ -101,6 +107,7 @@
   font-size: clamp(64px, 18vw, 112px);
   font-weight: 900;
   line-height: 1;
+  text-shadow: 0 0 30px rgba(255, 201, 74, 0.18);
 }
 
 .timer-next,
@@ -130,10 +137,11 @@
   height: 76px;
   margin-bottom: 10px;
   place-items: center;
-  border: 2px solid rgba(20, 232, 112, 0.45);
+  border: 2px solid rgba(255, 201, 74, 0.55);
   border-radius: 50%;
   background: var(--color-run-soft);
   color: var(--color-run);
+  box-shadow: 0 0 28px rgba(255, 201, 74, 0.18);
   font-family: var(--font-display);
   font-size: 22px;
   font-weight: 900;
@@ -196,5 +204,11 @@
 
   .screen-home .week-progress {
     grid-column: span 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen {
+    animation: none;
   }
 }
