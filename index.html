@@ -253,6 +253,33 @@
       </section>
     </main>
 
+    <dialog id="disclaimer-modal" class="disclaimer-modal" aria-labelledby="disclaimer-title" aria-describedby="disclaimer-description">
+      <div class="disclaimer-modal-content">
+        <p class="eyebrow">Antes de empezar</p>
+        <h2 id="disclaimer-title">Entrena con responsabilidad</h2>
+        <p id="disclaimer-description">
+          Esta app es una guía informativa y no sustituye el consejo de un profesional de la salud.
+          Adapta el entrenamiento a tu condición y detente si sientes dolor, mareo o dificultad respiratoria inusual.
+        </p>
+        <div class="disclaimer-actions">
+          <button id="disclaimer-deny" class="button button-secondary" type="button">Denegar</button>
+          <button id="disclaimer-accept" class="button button-primary" type="button">Aceptar</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="confirmation-modal" class="disclaimer-modal" aria-labelledby="confirmation-title" aria-describedby="confirmation-description">
+      <div class="disclaimer-modal-content">
+        <p class="eyebrow">Confirmar acción</p>
+        <h2 id="confirmation-title"></h2>
+        <p id="confirmation-description"></p>
+        <div class="disclaimer-actions">
+          <button id="confirmation-cancel" class="button button-secondary" type="button">Cancelar</button>
+          <button id="confirmation-accept" class="button button-primary" type="button">Confirmar</button>
+        </div>
+      </div>
+    </dialog>
+
     <nav id="app-navigation" class="bottom-navigation" aria-label="Navegacion principal">
       <a href="#home" class="navigation-item navigation-item-active">Inicio</a>
       <a href="#plan" class="navigation-item">Plan</a>
