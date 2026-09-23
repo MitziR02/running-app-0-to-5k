@@ -17,7 +17,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'running-app-0-to-5k-v3';
+const CACHE_NAME = 'running-app-0-to-5k-v4';
 const PRECACHE_URLS = [
   './',
   './index.html',

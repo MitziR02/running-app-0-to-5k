@@ -24,6 +24,7 @@ const weekListContainer = document.querySelector('#week-list');
 const appState = window.appState;
 const workoutService = window.workoutService;
 const sessionState = window.sessionState;
+const DISCLAIMER_STORAGE_KEY = 'running-app-0-to-5k-disclaimer-accepted';
 
 const stateElements = {
   homeGreeting: document.querySelector('#home-greeting'),
@@ -61,13 +62,158 @@ const stateElements = {
   saveSession: document.querySelector('#save-session'),
   rpeOptions: [...document.querySelectorAll('[data-rpe]')],
   progressBars: [...document.querySelectorAll('.progress-bar')],
+  disclaimerModal: document.querySelector('#disclaimer-modal'),
+  disclaimerAccept: document.querySelector('#disclaimer-accept'),
+  disclaimerDeny: document.querySelector('#disclaimer-deny'),
+  confirmationModal: document.querySelector('#confirmation-modal'),
+  confirmationTitle: document.querySelector('#confirmation-title'),
+  confirmationDescription: document.querySelector('#confirmation-description'),
+  confirmationCancel: document.querySelector('#confirmation-cancel'),
+  confirmationAccept: document.querySelector('#confirmation-accept'),
 };
 
 let timerInterval = null;
 let selectedRpe = null;
 let lastAnnouncedTimerState = null;
+let timerAudioContext = null;
+let previousAudioTimerState = null;
+let lastCountdownSecond = null;
+let pendingConfirmation = null;
 
 const formatDuration = window.timeUtils.formatDuration;
+
+function hasDisclaimerConsent() {
+  try {
+    return window.localStorage.getItem(DISCLAIMER_STORAGE_KEY) === 'true';
+  } catch (error) {
+    return false;
+  }
+}
+
+function openDisclaimer() {
+  if (stateElements.disclaimerModal && !stateElements.disclaimerModal.open) {
+    stateElements.disclaimerModal.showModal();
+  }
+}
+
+function ensureDisclaimerConsent() {
+  if (hasDisclaimerConsent()) {
+    return true;
+  }
+
+  openDisclaimer();
+  return false;
+}
+
+function acceptDisclaimer() {
+  try {
+    window.localStorage.setItem(DISCLAIMER_STORAGE_KEY, 'true');
+  } catch (error) {
+    return;
+  }
+  stateElements.disclaimerModal.close();
+}
+
+function denyDisclaimer() {
+  stateElements.disclaimerModal.close();
+}
+
+function openConfirmation({ title, description, confirmLabel, onConfirm }) {
+  stateElements.confirmationTitle.textContent = title;
+  stateElements.confirmationDescription.textContent = description;
+  stateElements.confirmationAccept.textContent = confirmLabel;
+  pendingConfirmation = onConfirm;
+  stateElements.confirmationModal.showModal();
+}
+
+function closeConfirmation() {
+  pendingConfirmation = null;
+  stateElements.confirmationModal.close();
+}
+
+function confirmPendingAction() {
+  const action = pendingConfirmation;
+  closeConfirmation();
+  if (action) {
+    action();
+  }
+}
+
+function getTimerAudioContext() {
+  if (!timerAudioContext) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) {
+      return null;
+    }
+    timerAudioContext = new AudioContext();
+  }
+
+  if (timerAudioContext.state === 'suspended') {
+    timerAudioContext.resume().catch(() => {});
+  }
+
+  return timerAudioContext;
+}
+
+function playTimerTone(type) {
+  const context = getTimerAudioContext();
+  if (!context) {
+    return;
+  }
+
+  const tones = {
+    countdown: { frequency: 660, duration: 0.09, volume: 0.045 },
+    start: { frequency: 520, duration: 0.16, volume: 0.06 },
+    interval: { frequency: 760, duration: 0.18, volume: 0.06 },
+    complete: { frequency: 880, duration: 0.28, volume: 0.07 },
+  };
+  const tone = tones[type] || tones.interval;
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  const now = context.currentTime;
+
+  oscillator.type = 'sine';
+  oscillator.frequency.setValueAtTime(tone.frequency, now);
+  gain.gain.setValueAtTime(tone.volume, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + tone.duration);
+  oscillator.connect(gain);
+  gain.connect(context.destination);
+  oscillator.start(now);
+  oscillator.stop(now + tone.duration);
+}
+
+function syncTimerAudio(timerState) {
+  const previousState = previousAudioTimerState;
+  const hasStarted = timerState.phase === sessionState.phases.RUNNING
+    && (!previousState || previousState.phase !== sessionState.phases.RUNNING);
+  const changedInterval = previousState
+    && timerState.phase === sessionState.phases.RUNNING
+    && previousState.phase === sessionState.phases.RUNNING
+    && timerState.currentIndex !== previousState.currentIndex;
+  const hasCompleted = previousState
+    && timerState.phase === sessionState.phases.COMPLETED
+    && previousState.phase !== sessionState.phases.COMPLETED;
+
+  if (hasStarted) {
+    playTimerTone('start');
+  } else if (changedInterval) {
+    playTimerTone('interval');
+  } else if (hasCompleted) {
+    playTimerTone('complete');
+  } else if (timerState.phase === sessionState.phases.RUNNING
+    && timerState.remainingSeconds <= 3
+    && timerState.remainingSeconds > 0
+    && timerState.remainingSeconds !== lastCountdownSecond) {
+    playTimerTone('countdown');
+  }
+
+  if (timerState.phase !== sessionState.phases.RUNNING) {
+    lastCountdownSecond = null;
+  } else {
+    lastCountdownSecond = timerState.remainingSeconds;
+  }
+  previousAudioTimerState = timerState;
+}
 
 function formatMinutes(totalSeconds) {
   const minutes = Math.ceil(totalSeconds / 60);
@@ -520,6 +666,10 @@ function handleSessionSelection(event) {
     return;
   }
 
+  if (!ensureDisclaimerConsent()) {
+    return;
+  }
+
   const session = window.trainingPlan.find((current) => (
     workoutService.getSessionKey(current) === trigger.dataset.sessionKey
   ));
@@ -555,7 +705,7 @@ function exportBackup() {
   const downloadUrl = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = downloadUrl;
-  link.download = `running-app-0-to-5k-backup-${today}.json`;
+  link.download = `running-app-backup-${today}.json`;
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -587,19 +737,21 @@ async function importBackup(file) {
       return;
     }
 
-    if (!window.confirm('El respaldo reemplazara el progreso actual. Esta accion no se puede deshacer.')) {
-      showBackupMessage('Importacion cancelada.');
-      return;
-    }
+    openConfirmation({
+      title: 'Reemplazar respaldo',
+      description: 'El respaldo reemplazara el progreso actual. Esta accion no se puede deshacer.',
+      confirmLabel: 'Importar respaldo',
+      onConfirm: () => {
+        sessionState.reset();
+        if (!appState.restore(result.state)) {
+          showBackupMessage('No se pudo restaurar el respaldo.', true);
+          return;
+        }
 
-    sessionState.reset();
-    if (!appState.restore(result.state)) {
-      showBackupMessage('No se pudo restaurar el respaldo.', true);
-      return;
-    }
-
-    showBackupMessage('Respaldo importado correctamente.');
-    window.location.hash = 'progress';
+        showBackupMessage('Respaldo importado correctamente.');
+        window.location.hash = 'progress';
+      },
+    });
   } catch (error) {
     showBackupMessage('No se pudo leer el archivo de respaldo.', true);
   } finally {
@@ -625,16 +777,24 @@ function handleSessionAction(event) {
   } else if (action === 'import-backup') {
     stateElements.backupFileInput.click();
   } else if (action === 'reset-progress') {
-    if (window.confirm('Se borrara todo el progreso y el historial. Esta accion no se puede deshacer.')) {
-      sessionState.reset();
-      appState.reset();
-      window.location.hash = 'home';
-    }
+    openConfirmation({
+      title: 'Restablecer progreso',
+      description: 'Se borrara todo el progreso y el historial. Esta accion no se puede deshacer.',
+      confirmLabel: 'Restablecer',
+      onConfirm: () => {
+        sessionState.reset();
+        appState.reset();
+        window.location.hash = 'home';
+      },
+    });
   } else if (action === 'exit-session') {
     sessionState.reset();
     appState.setActiveSession(null);
     window.location.hash = 'home';
   } else if (action === 'start-session') {
+    if (!ensureDisclaimerConsent()) {
+      return;
+    }
     sessionState.start();
   } else if (action === 'pause-session') {
     sessionState.pause();
@@ -686,25 +846,37 @@ function render(state) {
   renderActiveSession(state);
 }
 
+function initializeDisclaimer() {
+  if (!hasDisclaimerConsent()) {
+    openDisclaimer();
+  }
+}
+
 document.addEventListener('click', handleSessionSelection);
 document.addEventListener('click', handleSessionAction);
 document.addEventListener('change', handleAgendaDayChange);
 document.addEventListener('change', handleBackupFileChange);
 document.addEventListener('submit', handleAgendaSubmit);
+stateElements.disclaimerAccept.addEventListener('click', acceptDisclaimer);
+stateElements.disclaimerDeny.addEventListener('click', denyDisclaimer);
+stateElements.confirmationAccept.addEventListener('click', confirmPendingAction);
+stateElements.confirmationCancel.addEventListener('click', closeConfirmation);
 appState.subscribe(render);
 sessionState.subscribe((timerState) => {
+  syncTimerAudio(timerState);
   renderSessionState(timerState);
   syncTimerLoop(timerState);
 });
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
       .catch(() => {
         // PWA support is optional; the application remains usable without it.
       });
   });
 }
+initializeDisclaimer();
 render(appState.getState());
 renderSessionState(sessionState.getState());
 window.addEventListener('hashchange', handleRouteChange);

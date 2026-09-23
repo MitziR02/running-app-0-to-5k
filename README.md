@@ -11,12 +11,15 @@ El proyecto busca ofrecer una experiencia de entrenamiento sencilla, usable y au
 - Calentamiento, carrera, caminata y enfriamiento.
 - Seguimiento del esfuerzo percibido (RPE).
 - Progreso guardado localmente en el dispositivo.
+- Aviso inicial de responsabilidad antes de comenzar a entrenar.
 
 ## Estado actual
 
 La aplicacion funciona sin API, base de datos ni datos externos de entrenamiento. El plan inicial esta definido en el propio frontend y las sesiones completadas se guardan en `localStorage` del navegador.
 
 Esto permite ejecutar la app sin cuentas, autenticacion o configuracion de backend. El progreso no se sincroniza entre dispositivos y puede perderse al borrar los datos del navegador.
+
+En el primer uso se muestra un aviso breve de responsabilidad. Es necesario aceptarlo para iniciar sesiones; si se deniega, la aplicacion vuelve a solicitarlo al intentar comenzar un entrenamiento.
 
 ## Tecnologias (sujetas a cambios)
 
